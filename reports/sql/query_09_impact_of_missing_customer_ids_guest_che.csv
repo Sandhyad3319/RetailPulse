@@ -1,0 +1,3 @@
+checkout_category,distinct_invoices,line_item_records,net_units_sold,net_revenue_gbp,revenue_contribution_pct
+Guest Checkout (Missing CustomerID),1610,132565,417893,1469611.65,15.08
+Registered Customer Account,22186,401564,4878967,8278519.42,84.92

@@ -1,0 +1,16 @@
+market_region,country,total_orders,active_customers,net_revenue_gbp,pct_global_revenue
+Domestic UK,United Kingdom,21391,3950,8189252.3,84.01
+European Union,Netherlands,100,9,284661.54,2.92
+European Union,EIRE,360,4,262993.38,2.7
+European Union,Germany,603,95,221509.47,2.27
+European Union,France,461,88,197317.11,2.02
+International Export,Australia,69,9,137009.77,1.41
+European Union,Switzerland,74,22,56363.05,0.58
+European Union,Spain,105,31,54756.03,0.56
+European Union,Belgium,119,25,40910.96,0.42
+European Union,Sweden,46,8,36585.41,0.38
+International Export,Japan,28,8,35340.62,0.36
+European Union,Norway,40,10,35163.46,0.36
+European Union,Portugal,71,20,29302.97,0.3
+European Union,Finland,48,12,22326.74,0.23
+International Export,Channel Islands,33,9,20076.39,0.21

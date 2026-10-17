@@ -1,0 +1,9 @@
+Metric,Count,Financial_Value_GBP,Notes
+Raw Records Loaded,541909,,Original UCI Online Retail file
+Exact Duplicate Records Removed,5268,,Identical order lines from web double-clicks
+Records After Deduplication,536641,,Deduplicated working set
+Administrative Records Excluded (UnitPrice <= 0),2512,,"Inventory write-offs, lost items, bad debt"
+Cleaned Commercial Transactions,534129,9748131.07,Valid sales + returns
+-> Positive Sales Transactions,524878,10642110.8,Gross revenue generation
+-> Customer Returns & Cancellations,9251,-893979.73,Negative value refund stream
+Net Commercial Revenue Reconciled,534129,9748131.07,Gross Sales + Return Value

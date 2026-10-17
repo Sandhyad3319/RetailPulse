@@ -1,0 +1,2 @@
+total_orders,total_transaction_lines,gross_sales_gbp,return_refunds_gbp,net_revenue_gbp,refund_rate_pct,net_units_sold
+23796,534129,10642110.8,-893979.73,9748131.07,8.4,5296860

@@ -1,0 +1,16 @@
+Query,Title,Status,Rows,ExportedFile
+1,"Total Sales Revenue, Returns, Net Revenue & Volume Summary",PASS,1,query_01_total_sales_revenue_returns_net_revenue_.csv
+2,Monthly Net Revenue Trends & Order Volume,PASS,13,query_02_monthly_net_revenue_trends_order_volume.csv
+3,Quarterly and Yearly Financial Performance,PASS,5,query_03_quarterly_and_yearly_financial_performan.csv
+4,Top 10 Best-Selling Products by Unit Volume,PASS,10,query_04_top_10_best_selling_products_by_unit_vol.csv
+5,Top 10 Products by Net Revenue Contribution & Share of Total,PASS,10,query_05_top_10_products_by_net_revenue_contribut.csv
+6,Country-Level Revenue & Market Region Segmentation,PASS,15,query_06_country_level_revenue_market_region_segm.csv
+7,Average Order Value (AOV) by Geographic Market Region,PASS,3,query_07_average_order_value_aov_by_geographic_ma.csv
+8,Unique Customer Count (Registered Loyalty Accounts vs. Guest Checkouts),PASS,2,query_08_unique_customer_count_registered_loyalty.csv
+9,Impact of Missing Customer IDs (Guest Checkout Revenue Risk),PASS,2,query_09_impact_of_missing_customer_ids_guest_che.csv
+10,Customer Purchase Frequency & Repeat Customer Distribution,PASS,4,query_10_customer_purchase_frequency_repeat_custo.csv
+11,New vs. Returning Customer Monthly Acquisition Cohort,PASS,25,query_11_new_vs_returning_customer_monthly_acquis.csv
+12,Top 10 Registered Customers by Lifetime Revenue,PASS,10,query_12_top_10_registered_customers_by_lifetime_.csv
+13,Customer Revenue Ranking and Decile Segmentation (Window Functions),PASS,18,query_13_customer_revenue_ranking_and_decile_segm.csv
+14,Running Cumulative Monthly Revenue (Running Total Window Function),PASS,13,query_14_running_cumulative_monthly_revenue_runni.csv
+15,Returns and Cancellation Rate Analysis by Major Country Market,PASS,21,query_15_returns_and_cancellation_rate_analysis_b.csv

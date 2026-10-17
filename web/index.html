@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetailPulse — Sales & Customer Intelligence Dashboard</title>
+  <meta name="description" content="RetailPulse is an executive retail sales and customer intelligence dashboard powered by genuine UCI Online Retail data, SQLite relational star schema, and advanced DAX/SQL metrics.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="chart.min.js"></script>
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-badge">
+          <span class="pulse-dot"></span>
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>RetailPulse <span class="badge-edition">Executive BI</span></h1>
+          <p class="brand-subtitle">Retail Sales & Customer Intelligence Platform</p>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="status-pill">
+          <span class="live-dot"></span>
+          <span>SQLite Database: <strong>534,129 Verified Records</strong></span>
+        </div>
+        <div class="time-range-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Dec 01, 2010 – Dec 09, 2011</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top KPI Banner -->
+    <section class="kpi-grid" id="kpi-cards">
+      <div class="kpi-card highlight-cyan">
+        <div class="kpi-header">
+          <span class="kpi-title">Total Net Revenue</span>
+          <span class="kpi-icon">£</span>
+        </div>
+        <div class="kpi-value" id="kpi-net-revenue">£9,748,131.07</div>
+        <div class="kpi-footer">
+          <span class="kpi-sub positive">Gross: £10.64M</span>
+          <span class="kpi-sub negative">Returns: -£894.0K</span>
+        </div>
+      </div>
+
+      <div class="kpi-card highlight-blue">
+        <div class="kpi-header">
+          <span class="kpi-title">Completed Orders</span>
+          <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
+        <div class="kpi-value" id="kpi-total-orders">23,796</div>
+        <div class="kpi-footer">
+          <span class="kpi-neutral">534,129 Commercial Line Items</span>
+        </div>
+      </div>
+
+      <div class="kpi-card highlight-purple">
+        <div class="kpi-header">
+          <span class="kpi-title">Average Order Value (AOV)</span>
+          <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="kpi-value" id="kpi-aov">£409.65</div>
+        <div class="kpi-footer">
+          <span class="kpi-neutral">Domestic: £500 · Export: £1,563</span>
+        </div>
+      </div>
+
+      <div class="kpi-card highlight-emerald">
+        <div class="kpi-header">
+          <span class="kpi-title">Units Sold</span>
+          <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+        </div>
+        <div class="kpi-value" id="kpi-units-sold">5,296,860</div>
+        <div class="kpi-footer">
+          <span class="kpi-positive">3,828 Active Catalog SKUs</span>
+        </div>
+      </div>
+
+      <div class="kpi-card highlight-amber">
+        <div class="kpi-header">
+          <span class="kpi-title">Registered Accounts</span>
+          <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div class="kpi-value" id="kpi-customers">4,372</div>
+        <div class="kpi-footer">
+          <span class="kpi-positive">69.98% Repeat Buyer Rate</span>
+        </div>
+      </div>
+
+      <div class="kpi-card highlight-rose">
+        <div class="kpi-header">
+          <span class="kpi-title">Return Rate (By Value)</span>
+          <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+            <polyline points="17 18 23 18 23 12"></polyline>
+          </svg>
+        </div>
+        <div class="kpi-value" id="kpi-return-rate">8.40%</div>
+        <div class="kpi-footer">
+          <span class="kpi-negative">9,251 Refund Line Transactions</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="dashboard-tabs">
+      <button class="tab-btn active" data-tab="tab-overview" id="btn-tab-overview">
+        <span class="tab-icon">📊</span>
+        <span>Executive Overview</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-trends" id="btn-tab-trends">
+        <span class="tab-icon">📈</span>
+        <span>Sales Trends & Seasonality</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-products" id="btn-tab-products">
+        <span class="tab-icon">🛍️</span>
+        <span>Product Performance</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-customers" id="btn-tab-customers">
+        <span class="tab-icon">👥</span>
+        <span>Customer Intelligence & VIPs</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-geography" id="btn-tab-geography">
+        <span class="tab-icon">🌍</span>
+        <span>Geographic Markets</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+    <main class="tab-content active" id="tab-overview">
+      <div class="grid-2-1">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Monthly Net Revenue & Seasonal Growth</h2>
+              <p class="card-subtitle">Trajectory from Dec 2010 through Dec 2011 (Peak in Nov 2011: £1.46M)</p>
+            </div>
+            <span class="tag-pill cyan">13 Months Analyzed</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-overview-monthly"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Revenue by Market Channel</h2>
+              <p class="card-subtitle">Registered vs Guest vs Export</p>
+            </div>
+          </div>
+          <div class="chart-container-sm">
+            <canvas id="chart-overview-donuts"></canvas>
+          </div>
+          <div class="channel-stats">
+            <div class="stat-row">
+              <span class="stat-dot registered"></span>
+              <span class="stat-label">Registered Accounts</span>
+              <span class="stat-val">£8,278,519 (84.9%)</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-dot guest"></span>
+              <span class="stat-label">Guest Checkouts</span>
+              <span class="stat-val">£1,469,612 (15.1%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quarterly Breakdown Grid -->
+      <div class="quarterly-cards-grid">
+        <div class="quarter-card">
+          <div class="quarter-tag">2011 — Q1</div>
+          <div class="quarter-rev">£1,737,489</div>
+          <div class="quarter-meta">4,437 Orders · Return: 9.9%</div>
+          <div class="quarter-bar"><div class="fill" style="width: 55%;"></div></div>
+        </div>
+        <div class="quarter-card">
+          <div class="quarter-tag">2011 — Q2</div>
+          <div class="quarter-rev">£1,904,439</div>
+          <div class="quarter-meta">5,343 Orders · Return: 7.9%</div>
+          <div class="quarter-bar"><div class="fill" style="width: 61%;"></div></div>
+        </div>
+        <div class="quarter-card">
+          <div class="quarter-tag">2011 — Q3</div>
+          <div class="quarter-rev">£2,224,299</div>
+          <div class="quarter-meta">6,242 Orders · Return: 6.9%</div>
+          <div class="quarter-bar"><div class="fill" style="width: 71%;"></div></div>
+        </div>
+        <div class="quarter-card peak">
+          <div class="quarter-tag">2011 — Q4 (Holiday Peak)</div>
+          <div class="quarter-rev">£3,135,179</div>
+          <div class="quarter-meta">6,263 Orders · Return: 9.2%</div>
+          <div class="quarter-bar"><div class="fill peak-fill" style="width: 100%;"></div></div>
+        </div>
+      </div>
+
+      <!-- Strategic Takeaways Callout -->
+      <div class="strategic-callout">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <h3>Strategic Business Insights from Data</h3>
+          <p>
+            <strong>Holiday Seasonality (+194%):</strong> Net monthly sales expand from £497k in February to £1.46M in November. Retailers stock holiday gifting merchandise in bulk starting in September.<br>
+            <strong>The Wholesale Basket Advantage:</strong> While the UK accounts for 84% of revenue, international orders average <strong>£1,563 per basket</strong>—3.1x larger than UK domestic orders (£500).<br>
+            <strong>Pareto Customer Power:</strong> The top 459 VIP customers generate <strong>55.9% (£4.63M)</strong> of all registered sales. The #1 customer placed 76 orders worth £279k.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 2: SALES TRENDS & SEASONALITY -->
+    <section class="tab-content" id="tab-trends">
+      <div class="grid-1-1">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Gross Sales vs Returns by Month</h2>
+              <p class="card-subtitle">Monthly financial reconciliation (Gross sales, refund deductions, and net revenue)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-gross-returns"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Running Cumulative Net Revenue</h2>
+              <p class="card-subtitle">Cumulative financial growth curve toward £9.75M milestone</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-cumulative"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h2 class="card-title">Monthly Financial Statement & Performance Audit</h2>
+          <span class="tag-pill">From SQL Query 02</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="table-monthly-trends">
+            <thead>
+              <tr>
+                <th>Year-Month</th>
+                <th>Orders</th>
+                <th>Gross Sales (£)</th>
+                <th>Returns / Refunds (£)</th>
+                <th>Net Revenue (£)</th>
+                <th>Refund Rate</th>
+                <th>Units Sold</th>
+                <th>AOV (£)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PRODUCT PERFORMANCE -->
+    <section class="tab-content" id="tab-products">
+      <div class="grid-1-1">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Top 10 Products by Net Revenue</h2>
+              <p class="card-subtitle">Calculated with returns netted out per SKU</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-top-products-rev"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Top 10 Products by Physical Volume</h2>
+              <p class="card-subtitle">Ranked by total net units shipped</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-top-products-vol"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h2 class="card-title">Product Catalog Leaderboard (SQL Query 05)</h2>
+          <input type="text" id="product-search" class="search-input" placeholder="Search by Stock Code or Product Name...">
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="table-top-products">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Stock Code</th>
+                <th>Description</th>
+                <th>Units Sold</th>
+                <th>Order Appearances</th>
+                <th>Net Revenue (£)</th>
+                <th>Revenue Share</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: CUSTOMER INTELLIGENCE -->
+    <section class="tab-content" id="tab-customers">
+      <div class="grid-1-1">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Customer Loyalty Tiers & Spend Concentration</h2>
+              <p class="card-subtitle">Order frequency distribution (SQL Query 10)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-loyalty-tiers"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Guest Checkout vs Registered Revenue</h2>
+              <p class="card-subtitle">Evaluating the £1.47M guest checkout risk (SQL Query 09)</p>
+            </div>
+          </div>
+          <div class="chart-container-sm">
+            <canvas id="chart-guest-split"></canvas>
+          </div>
+          <div class="guest-risk-note">
+            <p><strong>Channel Risk Assessment:</strong> Guest checkouts account for <strong>15.08% of total revenue</strong> across 1,610 distinct order invoices. Forcing mandatory registration would increase cart abandonment risk.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h2 class="card-title">Top 10 VIP Registered Customers Leaderboard (SQL Query 12)</h2>
+          <span class="tag-pill purple">Lifetime High-Spenders</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="table-top-customers">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Customer ID</th>
+                <th>Country</th>
+                <th>Type</th>
+                <th>Total Orders</th>
+                <th>Units Purchased</th>
+                <th>First Order</th>
+                <th>Last Order</th>
+                <th>Lifetime Spend (£)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: GEOGRAPHIC MARKETS -->
+    <section class="tab-content" id="tab-geography">
+      <div class="grid-1-1">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Average Order Value (AOV) by Geographic Region</h2>
+              <p class="card-subtitle">Domestic UK vs European Union vs International Export (SQL Query 07)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-region-aov"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Long-Haul Return & Cancellation Rates</h2>
+              <p class="card-subtitle">Identifying overseas delivery and customs friction (SQL Query 15)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-return-friction"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h2 class="card-title">Country-Level Market Segmentation (SQL Query 06)</h2>
+          <span class="tag-pill blue">Top 15 Countries by Revenue</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="table-country-revenue">
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>Country</th>
+                <th>Total Orders</th>
+                <th>Active Accounts</th>
+                <th>Net Revenue (£)</th>
+                <th>Global Revenue Share</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <strong>RetailPulse Analytics Platform</strong> — Enterprise Portfolio Implementation
+      </div>
+      <div class="footer-right">
+        <span>SQLite 3</span> · <span>Star Schema</span> · <span>Power BI Compatible</span> · <span>Python 3.12</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

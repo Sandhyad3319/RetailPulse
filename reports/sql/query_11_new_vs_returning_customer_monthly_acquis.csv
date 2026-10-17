@@ -1,0 +1,26 @@
+year_month,buyer_status,active_customers,cohort_revenue_gbp
+2010-12,New Customer,948,552372.86
+2011-01,Returning Customer,362,271081.05
+2011-01,New Customer,421,202650.85
+2011-02,Returning Customer,418,286428.67
+2011-02,New Customer,380,149105.4
+2011-03,Returning Customer,580,389087.82
+2011-03,New Customer,440,189488.39
+2011-04,Returning Customer,600,305660.86
+2011-04,New Customer,299,119561.81
+2011-05,Returning Customer,800,531517.41
+2011-05,New Customer,279,115494.26
+2011-06,Returning Customer,816,514664.16
+2011-06,New Customer,235,92198.36
+2011-07,Returning Customer,802,507377.8
+2011-07,New Customer,191,65734.52
+2011-08,Returning Customer,813,537574.82
+2011-08,New Customer,167,77503.27
+2011-09,Returning Customer,1004,776420.85
+2011-09,New Customer,298,152935.38
+2011-10,Returning Customer,1073,819672.26
+2011-10,New Customer,352,153634.12
+2011-11,Returning Customer,1390,994044.48
+2011-11,New Customer,320,132770.59
+2011-12,Returning Customer,645,314816.68
+2011-12,New Customer,41,26722.75

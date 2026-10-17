@@ -1,0 +1,22 @@
+country,market_region,total_orders,gross_sales,return_refund_val,refund_value_rate_pct,return_frequency_pct
+Singapore,International Export,10,21279.29,12158.9,57.14,3.06
+Hong Kong,International Export,15,15483.0,5574.76,36.01,1.41
+Portugal,European Union,71,33683.05,4380.08,13.0,1.19
+Spain,European Union,105,61558.56,6802.53,11.05,1.9
+United Kingdom,Domestic UK,21391,9001744.09,812491.79,9.03,1.6
+EIRE,European Union,360,283140.52,20147.14,7.12,3.68
+France,European Union,461,209625.37,12308.26,5.87,1.73
+Japan,International Export,28,37416.37,2075.75,5.55,10.34
+Cyprus,European Union,20,13502.85,644.09,4.77,1.31
+Sweden,European Union,46,38367.83,1782.42,4.65,2.39
+Italy,European Union,55,17483.24,592.73,3.39,5.6
+Germany,European Union,603,228678.4,7168.93,3.13,4.78
+Norway,European Union,40,36165.44,1001.98,2.77,1.29
+Channel Islands,International Export,33,20440.54,364.15,1.78,1.32
+Switzerland,European Union,74,57067.6,704.55,1.23,1.76
+Australia,International Export,69,138453.81,1444.04,1.04,5.9
+Denmark,European Union,21,18955.34,187.2,0.99,2.31
+Finland,European Union,48,22546.08,219.34,0.97,1.44
+Belgium,European Union,119,41196.34,285.38,0.69,1.84
+Austria,European Union,19,10198.68,44.36,0.43,0.75
+Netherlands,European Union,100,285446.34,784.8,0.27,0.34

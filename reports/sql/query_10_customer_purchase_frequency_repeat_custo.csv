@@ -1,0 +1,5 @@
+loyalty_tier,customer_count,customer_pct,tier_revenue_gbp,revenue_pct
+2-5 Orders (Repeat Customer),1972,45.12,1793433.15,21.66
+1 Order (One-Time Buyer),1312,30.02,431608.86,5.21
+6-10 Orders (Loyal Customer),628,14.37,1423846.41,17.2
+10+ Orders (VIP / Power Buyer),459,10.5,4629631.0,55.92

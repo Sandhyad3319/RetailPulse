@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Large raw dataset files (auto-downloaded via python/download_data.py)
+data/raw/*.zip
+data/raw/*.xlsx
+data/raw/*.csv
+
+# Large processed files (regenerated anytime via clean_data.py & load_sqlite.py)
+data/processed/*.db
+data/processed/cleaned_transactions.csv
+data/processed/sales_transactions.csv
+data/processed/fact_sales.csv
+
+# Packaging & build artifacts
+build/
+dist/
+*.egg-info/
+
+# Testing & quality caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating System files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary logs
+*.log
+*.tmp
+
+# Sensitive credentials (safety rule)
+.env
+*.key
+*.pem

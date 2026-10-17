@@ -1,0 +1,19 @@
+revenue_rank,customer_id,country,total_orders,total_spend_gbp,spend_decile,strategic_segment
+1,14646,Netherlands,76,279489.02,1,Top 10% VIP Tier
+2,18102,United Kingdom,62,256438.49,1,Top 10% VIP Tier
+3,17450,United Kingdom,55,187322.17,1,Top 10% VIP Tier
+4,14911,EIRE,248,132458.73,1,Top 10% VIP Tier
+5,12415,Australia,26,123725.45,1,Top 10% VIP Tier
+6,14156,EIRE,66,113214.59,1,Top 10% VIP Tier
+7,17511,United Kingdom,46,88125.38,1,Top 10% VIP Tier
+8,16684,United Kingdom,31,65892.08,1,Top 10% VIP Tier
+9,13694,United Kingdom,60,62690.54,1,Top 10% VIP Tier
+10,15311,United Kingdom,118,59284.19,1,Top 10% VIP Tier
+11,13089,United Kingdom,118,57322.13,1,Top 10% VIP Tier
+12,14096,United Kingdom,34,57120.91,1,Top 10% VIP Tier
+13,15061,United Kingdom,55,54228.74,1,Top 10% VIP Tier
+14,16029,United Kingdom,76,53168.69,1,Top 10% VIP Tier
+15,17949,United Kingdom,52,52750.84,1,Top 10% VIP Tier
+100,13001,United Kingdom,15,9765.07,1,Top 10% VIP Tier
+500,17863,United Kingdom,6,3160.0,2,Top 30% Core Tier
+1000,15220,United Kingdom,7,1758.92,3,Top 30% Core Tier

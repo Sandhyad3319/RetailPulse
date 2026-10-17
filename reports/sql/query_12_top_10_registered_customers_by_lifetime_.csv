@@ -1,0 +1,11 @@
+customer_id,country,customer_type,total_orders,total_items_bought,first_order_date,last_order_date,lifetime_spend_gbp
+14646,Netherlands,Registered,76,196143,2010-12-20,2011-12-08,279489.02
+18102,United Kingdom,Registered,62,64122,2010-12-07,2011-12-09,256438.49
+17450,United Kingdom,Registered,55,69009,2010-12-07,2011-12-01,187322.17
+14911,EIRE,Registered,248,76905,2010-12-01,2011-12-08,132458.73
+12415,Australia,Registered,26,76946,2011-01-06,2011-11-15,123725.45
+14156,EIRE,Registered,66,56908,2010-12-02,2011-11-30,113214.59
+17511,United Kingdom,Registered,46,63012,2010-12-01,2011-12-07,88125.38
+16684,United Kingdom,Registered,31,49390,2010-12-16,2011-12-05,65892.08
+13694,United Kingdom,Registered,60,61899,2010-12-01,2011-12-06,62690.54
+15311,United Kingdom,Registered,118,37673,2010-12-01,2011-12-09,59284.19
