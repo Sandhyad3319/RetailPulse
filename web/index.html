@@ -157,6 +157,10 @@
         <span class="tab-icon">🌍</span>
         <span>Geographic Markets</span>
       </button>
+      <button class="tab-btn" data-tab="tab-sql-studio" id="btn-tab-sql-studio">
+        <span class="tab-icon">⚡</span>
+        <span>Interactive SQL Studio</span>
+      </button>
     </nav>
 
     <!-- TAB 1: EXECUTIVE OVERVIEW -->
@@ -240,6 +244,85 @@
           </p>
         </div>
       </div>
+
+      <!-- Executive What-If Strategy Simulator -->
+      <div class="card mt-4 simulator-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🎯 Executive What-If Strategy Simulator</h2>
+            <p class="card-subtitle">Real-time financial impact modeling based on commercial invariants</p>
+          </div>
+          <span class="tag-pill cyan">Interactive Forecasting</span>
+        </div>
+
+        <div class="simulator-grid">
+          <!-- Simulator 1: Guest Checkout Conversion -->
+          <div class="sim-panel">
+            <div class="sim-header">
+              <span class="sim-badge purple">Loyalty Strategy</span>
+              <h3>Guest-to-Member Conversion Uplift</h3>
+            </div>
+            <p class="sim-desc">
+              Current baseline: <strong>1,610 guest orders (£1.47M revenue)</strong> with 0 retention data. 
+              Registered accounts have a <strong>69.98% repeat buyer rate</strong>.
+            </p>
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span>Target Conversion Rate:</span>
+                <span class="slider-display" id="val-guest-conv">15%</span>
+              </div>
+              <input type="range" id="slider-guest-conv" min="0" max="50" step="5" value="15" class="custom-slider">
+            </div>
+            <div class="sim-results">
+              <div class="sim-metric">
+                <span class="metric-label">New Registered Accounts</span>
+                <span class="metric-val" id="res-guest-accounts">+242</span>
+              </div>
+              <div class="sim-metric">
+                <span class="metric-label">Projected Repeat Orders</span>
+                <span class="metric-val" id="res-guest-repeat">+406 orders</span>
+              </div>
+              <div class="sim-metric highlight">
+                <span class="metric-label">Annual CLV Revenue Gain</span>
+                <span class="metric-val" id="res-guest-revenue">+£166,160</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simulator 2: Return Friction Mitigation -->
+          <div class="sim-panel">
+            <div class="sim-header">
+              <span class="sim-badge rose">Operational Quality</span>
+              <h3>Return & Refund Mitigation Savings</h3>
+            </div>
+            <p class="sim-desc">
+              Current baseline: <strong>8.40% return rate (-£893,980 refunded)</strong> across 9,251 line transactions.
+              Mitigating delivery damage & catalog descriptions recovers margin.
+            </p>
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span>Target Return Rate Reduction:</span>
+                <span class="slider-display" id="val-refund-reduct">-2.0%</span>
+              </div>
+              <input type="range" id="slider-refund-reduct" min="0.5" max="5.0" step="0.5" value="2.0" class="custom-slider">
+            </div>
+            <div class="sim-results">
+              <div class="sim-metric">
+                <span class="metric-label">New Effective Return Rate</span>
+                <span class="metric-val" id="res-new-rate">6.40%</span>
+              </div>
+              <div class="sim-metric">
+                <span class="metric-label">Refund Deductions Prevented</span>
+                <span class="metric-val" id="res-saved-lines">~2,202 transactions</span>
+              </div>
+              <div class="sim-metric highlight emerald">
+                <span class="metric-label">Direct EBITDA Savings</span>
+                <span class="metric-val" id="res-refund-savings">+£212,842</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- TAB 2: SALES TRENDS & SEASONALITY -->
@@ -272,8 +355,14 @@
 
       <div class="card mt-4">
         <div class="card-header">
-          <h2 class="card-title">Monthly Financial Statement & Performance Audit</h2>
-          <span class="tag-pill">From SQL Query 02</span>
+          <div>
+            <h2 class="card-title">Monthly Financial Statement & Performance Audit</h2>
+            <p class="card-subtitle">13-Month Reconciled Trading Statement</p>
+          </div>
+          <div class="header-actions">
+            <button class="export-btn" id="btn-export-monthly">📥 Export CSV</button>
+            <span class="tag-pill">From SQL Query 02</span>
+          </div>
         </div>
         <div class="table-wrapper">
           <table class="data-table" id="table-monthly-trends">
@@ -327,8 +416,14 @@
 
       <div class="card mt-4">
         <div class="card-header">
-          <h2 class="card-title">Product Catalog Leaderboard (SQL Query 05)</h2>
-          <input type="text" id="product-search" class="search-input" placeholder="Search by Stock Code or Product Name...">
+          <div>
+            <h2 class="card-title">Product Catalog Leaderboard (SQL Query 05)</h2>
+            <p class="card-subtitle" id="product-count-display">Showing 10 of 10 items</p>
+          </div>
+          <div class="header-actions">
+            <input type="text" id="product-search" class="search-input" placeholder="Search by Stock Code or Description...">
+            <button class="export-btn" id="btn-export-products">📥 Export CSV</button>
+          </div>
         </div>
         <div class="table-wrapper">
           <table class="data-table" id="table-top-products">
@@ -384,8 +479,14 @@
 
       <div class="card mt-4">
         <div class="card-header">
-          <h2 class="card-title">Top 10 VIP Registered Customers Leaderboard (SQL Query 12)</h2>
-          <span class="tag-pill purple">Lifetime High-Spenders</span>
+          <div>
+            <h2 class="card-title">Top 10 VIP Registered Customers Leaderboard (SQL Query 12)</h2>
+            <p class="card-subtitle">Lifetime High-Spenders (Whale Accounts)</p>
+          </div>
+          <div class="header-actions">
+            <button class="export-btn" id="btn-export-customers">📥 Export CSV</button>
+            <span class="tag-pill purple">Lifetime High-Spenders</span>
+          </div>
         </div>
         <div class="table-wrapper">
           <table class="data-table" id="table-top-customers">
@@ -440,8 +541,14 @@
 
       <div class="card mt-4">
         <div class="card-header">
-          <h2 class="card-title">Country-Level Market Segmentation (SQL Query 06)</h2>
-          <span class="tag-pill blue">Top 15 Countries by Revenue</span>
+          <div>
+            <h2 class="card-title">Country-Level Market Segmentation (SQL Query 06)</h2>
+            <p class="card-subtitle">Top 15 Countries by Revenue</p>
+          </div>
+          <div class="header-actions">
+            <button class="export-btn" id="btn-export-geography">📥 Export CSV</button>
+            <span class="tag-pill blue">Top 15 Countries</span>
+          </div>
         </div>
         <div class="table-wrapper">
           <table class="data-table" id="table-country-revenue">
@@ -459,6 +566,154 @@
               <!-- Injected by JavaScript -->
             </tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: INTERACTIVE SQL & SCHEMA STUDIO -->
+    <section class="tab-content" id="tab-sql-studio">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">⚡ Interactive SQL Query Studio & Execution Engine</h2>
+            <p class="card-subtitle">Select any analytical business query to view its SQL logic, business problem, and live output</p>
+          </div>
+          <div class="header-actions">
+            <select id="sql-query-select" class="query-dropdown">
+              <!-- Dynamically populated from sql_queries_library -->
+            </select>
+            <button class="export-btn" id="btn-export-query-results">📥 Export Query CSV</button>
+          </div>
+        </div>
+
+        <!-- Query Metadata Header -->
+        <div class="query-meta-panel">
+          <div class="meta-item">
+            <span class="meta-label">Business Problem Solved:</span>
+            <p class="meta-text" id="sql-business-question">Loading...</p>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">SQL Techniques & Concepts Demonstrated:</span>
+            <div class="concept-tags" id="sql-concept-tags">
+              <!-- Rendered tags -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SQL Code Block with Copy -->
+        <div class="sql-code-wrapper">
+          <div class="sql-code-header">
+            <span class="code-lang-tag">SQLite 3 — Analytical SQL Engine</span>
+            <button class="copy-sql-btn" id="btn-copy-sql">
+              <span id="copy-text">📋 Copy SQL Query</span>
+            </button>
+          </div>
+          <pre class="sql-code-block"><code id="sql-code-display">SELECT ...</code></pre>
+        </div>
+
+        <!-- Live Query Output Table -->
+        <div class="query-results-wrapper mt-4">
+          <div class="results-header">
+            <h3 class="results-title">Query Output Preview (<span id="sql-row-count">0</span> rows returned)</h3>
+            <span class="status-badge live">Verified Against retailpulse.db</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table" id="table-sql-results">
+              <thead id="sql-results-thead">
+                <!-- Dynamically generated -->
+              </thead>
+              <tbody id="sql-results-tbody">
+                <!-- Dynamically generated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Relational Star Schema Architecture Diagram -->
+      <div class="card mt-4 schema-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🏛️ Relational Star Schema Architecture & Data Model</h2>
+            <p class="card-subtitle">Physical dimensional data model in SQLite (3 Dimension Tables, 1 Central Fact Table)</p>
+          </div>
+          <span class="tag-pill emerald">Third Normal Form (3NF) Dimensions</span>
+        </div>
+        <div class="schema-grid">
+          <div class="schema-table-card dim">
+            <div class="schema-th">
+              <span class="dim-badge">DIM</span>
+              <h4>dim_customer</h4>
+            </div>
+            <ul class="schema-cols">
+              <li class="pk">🔑 customer_id <span class="col-type">INT PK</span></li>
+              <li>country <span class="col-type">TEXT NOT NULL</span></li>
+              <li>is_guest <span class="col-type">INT NOT NULL</span></li>
+              <li>first_order_date <span class="col-type">DATE</span></li>
+              <li>last_order_date <span class="col-type">DATE</span></li>
+              <li>total_orders <span class="col-type">INT</span></li>
+              <li>total_spend <span class="col-type">REAL</span></li>
+            </ul>
+          </div>
+
+          <div class="schema-arrow">
+            <span>1 : N</span>
+            <div class="arrow-line"></div>
+          </div>
+
+          <div class="schema-table-card fact">
+            <div class="schema-th fact-th">
+              <span class="fact-badge">FACT</span>
+              <h4>fact_sales</h4>
+            </div>
+            <ul class="schema-cols">
+              <li class="pk">🔑 sales_id <span class="col-type">INT PK</span></li>
+              <li class="fk">🔗 invoice_no <span class="col-type">TEXT NOT NULL</span></li>
+              <li class="fk">🔗 stock_code <span class="col-type">TEXT FK</span></li>
+              <li class="fk">🔗 customer_id <span class="col-type">INT FK</span></li>
+              <li class="fk">🔗 date_key <span class="col-type">INT FK</span></li>
+              <li>invoice_date <span class="col-type">DATETIME NOT NULL</span></li>
+              <li>quantity <span class="col-type">INT NOT NULL</span></li>
+              <li>unit_price <span class="col-type">REAL NOT NULL</span></li>
+              <li>line_total <span class="col-type">REAL NOT NULL</span></li>
+              <li>is_return <span class="col-type">INT NOT NULL</span></li>
+            </ul>
+          </div>
+
+          <div class="schema-arrow">
+            <span>N : 1</span>
+            <div class="arrow-line"></div>
+          </div>
+
+          <div class="schema-table-col">
+            <div class="schema-table-card dim mb-3">
+              <div class="schema-th">
+                <span class="dim-badge">DIM</span>
+                <h4>dim_product</h4>
+              </div>
+              <ul class="schema-cols">
+                <li class="pk">🔑 stock_code <span class="col-type">TEXT PK</span></li>
+                <li>description <span class="col-type">TEXT NOT NULL</span></li>
+                <li>avg_unit_price <span class="col-type">REAL NOT NULL</span></li>
+              </ul>
+            </div>
+
+            <div class="schema-table-card dim">
+              <div class="schema-th">
+                <span class="dim-badge">DIM</span>
+                <h4>dim_date</h4>
+              </div>
+              <ul class="schema-cols">
+                <li class="pk">🔑 date_key <span class="col-type">INT PK</span></li>
+                <li>full_date <span class="col-type">DATE UNIQUE</span></li>
+                <li>year <span class="col-type">INT</span></li>
+                <li>month <span class="col-type">INT</span></li>
+                <li>quarter <span class="col-type">INT</span></li>
+                <li>day_of_week <span class="col-type">INT</span></li>
+                <li>is_weekend <span class="col-type">INT</span></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>

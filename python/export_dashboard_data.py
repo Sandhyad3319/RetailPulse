@@ -7,6 +7,7 @@ for the interactive web dashboard.
 import json
 from pathlib import Path
 import pandas as pd
+import re
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SQL_REPORTS_DIR = PROJECT_ROOT / "reports" / "sql"
@@ -80,7 +81,83 @@ def export_dashboard_data():
     df_q15 = pd.read_csv(SQL_REPORTS_DIR / "query_15_returns_and_cancellation_rate_analysis_b.csv")
     data["returns_by_country"] = df_q15.to_dict(orient="records")
 
-    print("[2/2] Writing consolidated JSON to web/dashboard_data.json...")
+    # Extract all 15 queries metadata & results for interactive SQL Studio
+    print("[2/3] Parsing SQL query metadata from sql/analysis_queries.sql...")
+    sql_file = PROJECT_ROOT / "sql" / "analysis_queries.sql"
+    sql_text = sql_file.read_text(encoding="utf-8")
+
+    query_blocks = re.split(r"-- QUERY (\d+):", sql_text)
+    # query_blocks[0] is preamble, then alternating (num, body)
+    sql_library = []
+    
+    csv_map = {
+        1: "query_01_total_sales_revenue_returns_net_revenue_.csv",
+        2: "query_02_monthly_net_revenue_trends_order_volume.csv",
+        3: "query_03_quarterly_and_yearly_financial_performan.csv",
+        4: "query_04_top_10_best_selling_products_by_unit_vol.csv",
+        5: "query_05_top_10_products_by_net_revenue_contribut.csv",
+        6: "query_06_country_level_revenue_market_region_segm.csv",
+        7: "query_07_average_order_value_aov_by_geographic_ma.csv",
+        8: "query_08_unique_customer_count_registered_loyalty.csv",
+        9: "query_09_impact_of_missing_customer_ids_guest_che.csv",
+        10: "query_10_customer_purchase_frequency_repeat_custo.csv",
+        11: "query_11_new_vs_returning_customer_monthly_acquis.csv",
+        12: "query_12_top_10_registered_customers_by_lifetime_.csv",
+        13: "query_13_customer_revenue_ranking_and_decile_segm.csv",
+        14: "query_14_running_cumulative_monthly_revenue_runni.csv",
+        15: "query_15_returns_and_cancellation_rate_analysis_b.csv",
+    }
+
+    for i in range(1, len(query_blocks), 2):
+        q_num = int(query_blocks[i])
+        block = query_blocks[i + 1]
+
+        lines = block.splitlines()
+        title = lines[0].strip() if lines else f"Query {q_num}"
+        
+        business_question = ""
+        concepts = ""
+        sql_lines = []
+        in_sql = False
+
+        for line in lines[1:]:
+            s = line.strip()
+            if s.startswith("-- Business Question:"):
+                business_question = s.replace("-- Business Question:", "").strip()
+            elif s.startswith("-- Concepts Demonstrated:"):
+                concepts = s.replace("-- Concepts Demonstrated:", "").strip()
+            elif s.startswith("--") and not in_sql:
+                continue
+            else:
+                in_sql = True
+                sql_lines.append(line)
+
+        raw_sql = "\n".join(sql_lines).strip()
+        if raw_sql.endswith(";"):
+            raw_sql = raw_sql[:-1].strip()
+
+        # Load CSV results
+        csv_file = SQL_REPORTS_DIR / csv_map.get(q_num, "")
+        records = []
+        columns = []
+        if csv_file.exists():
+            df = pd.read_csv(csv_file)
+            columns = list(df.columns)
+            records = df.to_dict(orient="records")
+
+        sql_library.append({
+            "num": q_num,
+            "title": title,
+            "business_question": business_question,
+            "concepts": concepts,
+            "sql": raw_sql,
+            "columns": columns,
+            "rows": records
+        })
+
+    data["sql_queries_library"] = sql_library
+
+    print("[3/3] Writing consolidated JSON to web/dashboard_data.json...")
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
@@ -88,4 +165,5 @@ def export_dashboard_data():
 
 
 if __name__ == "__main__":
+    import re
     export_dashboard_data()

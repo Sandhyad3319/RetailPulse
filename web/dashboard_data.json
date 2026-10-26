@@ -1237,5 +1237,1474 @@
       "refund_value_rate_pct": 0.27,
       "return_frequency_pct": 0.34
     }
+  ],
+  "sql_queries_library": [
+    {
+      "num": 1,
+      "title": "Total Sales Revenue, Returns, Net Revenue & Volume Summary",
+      "business_question": "What is the total financial performance of the business,",
+      "concepts": "Aggregations (SUM, COUNT), CASE WHEN, ROUND",
+      "sql": "SELECT \n    COUNT(DISTINCT invoice_no) AS total_orders,\n    COUNT(*) AS total_transaction_lines,\n    ROUND(SUM(CASE WHEN is_return = 0 THEN line_total ELSE 0 END), 2) AS gross_sales_gbp,\n    ROUND(SUM(CASE WHEN is_return = 1 THEN line_total ELSE 0 END), 2) AS return_refunds_gbp,\n    ROUND(SUM(line_total), 2) AS net_revenue_gbp,\n    ROUND(ABS(SUM(CASE WHEN is_return = 1 THEN line_total ELSE 0 END)) * 100.0 / \n          SUM(CASE WHEN is_return = 0 THEN line_total ELSE 0 END), 2) AS refund_rate_pct,\n    SUM(quantity) AS net_units_sold\nFROM fact_sales;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "total_orders",
+        "total_transaction_lines",
+        "gross_sales_gbp",
+        "return_refunds_gbp",
+        "net_revenue_gbp",
+        "refund_rate_pct",
+        "net_units_sold"
+      ],
+      "rows": [
+        {
+          "total_orders": 23796,
+          "total_transaction_lines": 534129,
+          "gross_sales_gbp": 10642110.8,
+          "return_refunds_gbp": -893979.73,
+          "net_revenue_gbp": 9748131.07,
+          "refund_rate_pct": 8.4,
+          "net_units_sold": 5296860
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "title": "Monthly Net Revenue Trends & Order Volume",
+      "business_question": "How has net sales revenue, order count, and average daily sales",
+      "concepts": "INNER JOIN, GROUP BY, Date-based Aggregation, ORDER BY",
+      "sql": "SELECT \n    d.year_month,\n    d.year,\n    d.month_name,\n    COUNT(DISTINCT f.invoice_no) AS monthly_orders,\n    SUM(f.quantity) AS net_units_sold,\n    ROUND(SUM(CASE WHEN f.is_return = 0 THEN f.line_total ELSE 0 END), 2) AS gross_revenue_gbp,\n    ROUND(SUM(CASE WHEN f.is_return = 1 THEN f.line_total ELSE 0 END), 2) AS refund_value_gbp,\n    ROUND(SUM(f.line_total), 2) AS net_revenue_gbp\nFROM fact_sales f\nINNER JOIN dim_date d ON f.date_key = d.date_key\nGROUP BY d.year_month, d.year, d.month_name\nORDER BY d.year_month ASC;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "year_month",
+        "year",
+        "month_name",
+        "monthly_orders",
+        "net_units_sold",
+        "gross_revenue_gbp",
+        "refund_value_gbp",
+        "net_revenue_gbp"
+      ],
+      "rows": [
+        {
+          "year_month": "2010-12",
+          "year": 2010,
+          "month_name": "December",
+          "monthly_orders": 1885,
+          "net_units_sold": 342009,
+          "gross_revenue_gbp": 821452.73,
+          "refund_value_gbp": -74729.12,
+          "net_revenue_gbp": 746723.61
+        },
+        {
+          "year_month": "2011-01",
+          "year": 2011,
+          "month_name": "January",
+          "monthly_orders": 1346,
+          "net_units_sold": 307255,
+          "gross_revenue_gbp": 689811.61,
+          "refund_value_gbp": -131363.05,
+          "net_revenue_gbp": 558448.56
+        },
+        {
+          "year_month": "2011-02",
+          "year": 2011,
+          "month_name": "February",
+          "monthly_orders": 1319,
+          "net_units_sold": 280069,
+          "gross_revenue_gbp": 522545.56,
+          "refund_value_gbp": -25519.15,
+          "net_revenue_gbp": 497026.41
+        },
+        {
+          "year_month": "2011-03",
+          "year": 2011,
+          "month_name": "March",
+          "monthly_orders": 1772,
+          "net_units_sold": 371424,
+          "gross_revenue_gbp": 716215.26,
+          "refund_value_gbp": -34201.28,
+          "net_revenue_gbp": 682013.98
+        },
+        {
+          "year_month": "2011-04",
+          "year": 2011,
+          "month_name": "April",
+          "monthly_orders": 1486,
+          "net_units_sold": 294309,
+          "gross_revenue_gbp": 536968.49,
+          "refund_value_gbp": -44600.65,
+          "net_revenue_gbp": 492367.84
+        },
+        {
+          "year_month": "2011-05",
+          "year": 2011,
+          "month_name": "May",
+          "monthly_orders": 1995,
+          "net_units_sold": 389133,
+          "gross_revenue_gbp": 769296.61,
+          "refund_value_gbp": -47202.51,
+          "net_revenue_gbp": 722094.1
+        },
+        {
+          "year_month": "2011-06",
+          "year": 2011,
+          "month_name": "June",
+          "monthly_orders": 1862,
+          "net_units_sold": 381175,
+          "gross_revenue_gbp": 760547.01,
+          "refund_value_gbp": -70569.78,
+          "net_revenue_gbp": 689977.23
+        },
+        {
+          "year_month": "2011-07",
+          "year": 2011,
+          "month_name": "July",
+          "monthly_orders": 1745,
+          "net_units_sold": 393666,
+          "gross_revenue_gbp": 718076.12,
+          "refund_value_gbp": -37919.13,
+          "net_revenue_gbp": 680156.99
+        },
+        {
+          "year_month": "2011-08",
+          "year": 2011,
+          "month_name": "August",
+          "monthly_orders": 1639,
+          "net_units_sold": 408675,
+          "gross_revenue_gbp": 757841.38,
+          "refund_value_gbp": -54330.8,
+          "net_revenue_gbp": 703510.58
+        },
+        {
+          "year_month": "2011-09",
+          "year": 2011,
+          "month_name": "September",
+          "monthly_orders": 2170,
+          "net_units_sold": 562243,
+          "gross_revenue_gbp": 1056435.19,
+          "refund_value_gbp": -38838.51,
+          "net_revenue_gbp": 1017596.68
+        },
+        {
+          "year_month": "2011-10",
+          "year": 2011,
+          "month_name": "October",
+          "monthly_orders": 2402,
+          "net_units_sold": 598077,
+          "gross_revenue_gbp": 1151263.73,
+          "refund_value_gbp": -81895.5,
+          "net_revenue_gbp": 1069368.23
+        },
+        {
+          "year_month": "2011-11",
+          "year": 2011,
+          "month_name": "November",
+          "monthly_orders": 3210,
+          "net_units_sold": 738782,
+          "gross_revenue_gbp": 1503866.78,
+          "refund_value_gbp": -47720.98,
+          "net_revenue_gbp": 1456145.8
+        },
+        {
+          "year_month": "2011-12",
+          "year": 2011,
+          "month_name": "December",
+          "monthly_orders": 965,
+          "net_units_sold": 230043,
+          "gross_revenue_gbp": 637790.33,
+          "refund_value_gbp": -205089.27,
+          "net_revenue_gbp": 432701.06
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "title": "Quarterly and Yearly Financial Performance",
+      "business_question": "What is the high-level quarterly revenue trajectory and how",
+      "concepts": "Multi-level GROUP BY, INNER JOIN, SUM with CASE WHEN",
+      "sql": "SELECT \n    d.year,\n    d.quarter,\n    d.year_quarter,\n    COUNT(DISTINCT f.invoice_no) AS distinct_invoices,\n    ROUND(SUM(CASE WHEN f.is_return = 0 THEN f.line_total ELSE 0 END), 2) AS gross_sales_gbp,\n    ROUND(SUM(CASE WHEN f.is_return = 1 THEN f.line_total ELSE 0 END), 2) AS returns_gbp,\n    ROUND(SUM(f.line_total), 2) AS net_revenue_gbp\nFROM fact_sales f\nINNER JOIN dim_date d ON f.date_key = d.date_key\nGROUP BY d.year, d.quarter, d.year_quarter\nORDER BY d.year, d.quarter;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "year",
+        "quarter",
+        "year_quarter",
+        "distinct_invoices",
+        "gross_sales_gbp",
+        "returns_gbp",
+        "net_revenue_gbp"
+      ],
+      "rows": [
+        {
+          "year": 2010,
+          "quarter": 4,
+          "year_quarter": "2010-Q4",
+          "distinct_invoices": 1885,
+          "gross_sales_gbp": 821452.73,
+          "returns_gbp": -74729.12,
+          "net_revenue_gbp": 746723.61
+        },
+        {
+          "year": 2011,
+          "quarter": 1,
+          "year_quarter": "2011-Q1",
+          "distinct_invoices": 4437,
+          "gross_sales_gbp": 1928572.43,
+          "returns_gbp": -191083.48,
+          "net_revenue_gbp": 1737488.95
+        },
+        {
+          "year": 2011,
+          "quarter": 2,
+          "year_quarter": "2011-Q2",
+          "distinct_invoices": 5343,
+          "gross_sales_gbp": 2066812.11,
+          "returns_gbp": -162372.94,
+          "net_revenue_gbp": 1904439.17
+        },
+        {
+          "year": 2011,
+          "quarter": 3,
+          "year_quarter": "2011-Q3",
+          "distinct_invoices": 5554,
+          "gross_sales_gbp": 2532352.69,
+          "returns_gbp": -131088.44,
+          "net_revenue_gbp": 2401264.25
+        },
+        {
+          "year": 2011,
+          "quarter": 4,
+          "year_quarter": "2011-Q4",
+          "distinct_invoices": 6577,
+          "gross_sales_gbp": 3292920.84,
+          "returns_gbp": -334705.75,
+          "net_revenue_gbp": 2958215.09
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "title": "Top 10 Best-Selling Products by Unit Volume",
+      "business_question": "Which merchandise items generate the highest physical demand",
+      "concepts": "INNER JOIN, GROUP BY, HAVING, ORDER BY, LIMIT",
+      "sql": "SELECT \n    p.stock_code,\n    p.description,\n    p.avg_unit_price,\n    SUM(f.quantity) AS total_units_sold,\n    COUNT(DISTINCT f.invoice_no) AS order_appearances,\n    ROUND(SUM(f.line_total), 2) AS net_product_revenue_gbp\nFROM fact_sales f\nINNER JOIN dim_product p ON f.stock_code = p.stock_code\nWHERE f.is_return = 0\nGROUP BY p.stock_code, p.description, p.avg_unit_price\nHAVING total_units_sold > 0\nORDER BY total_units_sold DESC\nLIMIT 10;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "stock_code",
+        "description",
+        "avg_unit_price",
+        "total_units_sold",
+        "order_appearances",
+        "net_product_revenue_gbp"
+      ],
+      "rows": [
+        {
+          "stock_code": "23166",
+          "description": "MEDIUM CERAMIC TOP STORAGE JAR",
+          "avg_unit_price": 1.46,
+          "total_units_sold": 78033,
+          "order_appearances": 247,
+          "net_product_revenue_gbp": 81700.92
+        },
+        {
+          "stock_code": "22197",
+          "description": "SMALL POPCORN HOLDER",
+          "avg_unit_price": 1.04,
+          "total_units_sold": 56898,
+          "order_appearances": 1392,
+          "net_product_revenue_gbp": 51334.47
+        },
+        {
+          "stock_code": "84077",
+          "description": "WORLD WAR 2 GLIDERS ASSTD DESIGNS",
+          "avg_unit_price": 0.32,
+          "total_units_sold": 54951,
+          "order_appearances": 535,
+          "net_product_revenue_gbp": 13814.01
+        },
+        {
+          "stock_code": "85099B",
+          "description": "JUMBO BAG RED RETROSPOT",
+          "avg_unit_price": 2.47,
+          "total_units_sold": 48371,
+          "order_appearances": 2089,
+          "net_product_revenue_gbp": 94159.81
+        },
+        {
+          "stock_code": "85123A",
+          "description": "WHITE HANGING HEART T-LIGHT HOLDER",
+          "avg_unit_price": 3.21,
+          "total_units_sold": 37933,
+          "order_appearances": 2265,
+          "net_product_revenue_gbp": 106415.23
+        },
+        {
+          "stock_code": "21212",
+          "description": "PACK OF 72 RETROSPOT CAKE CASES",
+          "avg_unit_price": 0.76,
+          "total_units_sold": 36396,
+          "order_appearances": 1320,
+          "net_product_revenue_gbp": 21246.45
+        },
+        {
+          "stock_code": "84879",
+          "description": "ASSORTED COLOUR BIRD ORNAMENT",
+          "avg_unit_price": 1.72,
+          "total_units_sold": 36362,
+          "order_appearances": 1455,
+          "net_product_revenue_gbp": 58927.62
+        },
+        {
+          "stock_code": "23084",
+          "description": "RABBIT NIGHT LIGHT",
+          "avg_unit_price": 2.38,
+          "total_units_sold": 30739,
+          "order_appearances": 994,
+          "net_product_revenue_gbp": 66870.03
+        },
+        {
+          "stock_code": "22492",
+          "description": "MINI PAINT SET VINTAGE",
+          "avg_unit_price": 0.78,
+          "total_units_sold": 26633,
+          "order_appearances": 380,
+          "net_product_revenue_gbp": 16937.82
+        },
+        {
+          "stock_code": "22616",
+          "description": "PACK OF 12 LONDON TISSUES",
+          "avg_unit_price": 0.45,
+          "total_units_sold": 26119,
+          "order_appearances": 512,
+          "net_product_revenue_gbp": 7975.98
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "title": "Top 10 Products by Net Revenue Contribution & Share of Total",
+      "business_question": "Which products are our biggest financial revenue drivers,",
+      "concepts": "CTE (Common Table Expression), Window Function (SUM OVER)",
+      "sql": "WITH ProductSales AS (\n    SELECT \n        p.stock_code,\n        p.description,\n        ROUND(SUM(f.line_total), 2) AS product_net_revenue,\n        SUM(f.quantity) AS units_sold,\n        COUNT(DISTINCT f.invoice_no) AS order_appearances\n    FROM fact_sales f\n    INNER JOIN dim_product p ON f.stock_code = p.stock_code\n    GROUP BY p.stock_code, p.description\n)\nSELECT \n    stock_code,\n    description,\n    units_sold,\n    order_appearances,\n    product_net_revenue,\n    ROUND(product_net_revenue * 100.0 / (SELECT SUM(line_total) FROM fact_sales), 2) AS pct_of_total_revenue\nFROM ProductSales\nORDER BY product_net_revenue DESC\nLIMIT 10;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "stock_code",
+        "description",
+        "units_sold",
+        "order_appearances",
+        "product_net_revenue",
+        "pct_of_total_revenue"
+      ],
+      "rows": [
+        {
+          "stock_code": "DOT",
+          "description": "DOTCOM POSTAGE",
+          "units_sold": 705,
+          "order_appearances": 707,
+          "product_net_revenue": 206245.48,
+          "pct_of_total_revenue": 2.12
+        },
+        {
+          "stock_code": "22423",
+          "description": "REGENCY CAKESTAND 3 TIER",
+          "units_sold": 12996,
+          "order_appearances": 2168,
+          "product_net_revenue": 164459.49,
+          "pct_of_total_revenue": 1.69
+        },
+        {
+          "stock_code": "85123A",
+          "description": "WHITE HANGING HEART T-LIGHT HOLDER",
+          "units_sold": 35355,
+          "order_appearances": 2307,
+          "product_net_revenue": 99790.93,
+          "pct_of_total_revenue": 1.02
+        },
+        {
+          "stock_code": "47566",
+          "description": "PARTY BUNTING",
+          "units_sold": 18006,
+          "order_appearances": 1705,
+          "product_net_revenue": 98243.88,
+          "pct_of_total_revenue": 1.01
+        },
+        {
+          "stock_code": "85099B",
+          "description": "JUMBO BAG RED RETROSPOT",
+          "units_sold": 47256,
+          "order_appearances": 2132,
+          "product_net_revenue": 92175.79,
+          "pct_of_total_revenue": 0.95
+        },
+        {
+          "stock_code": "23084",
+          "description": "RABBIT NIGHT LIGHT",
+          "units_sold": 30631,
+          "order_appearances": 1009,
+          "product_net_revenue": 66661.63,
+          "pct_of_total_revenue": 0.68
+        },
+        {
+          "stock_code": "POST",
+          "description": "POSTAGE",
+          "units_sold": 3003,
+          "order_appearances": 1250,
+          "product_net_revenue": 66230.64,
+          "pct_of_total_revenue": 0.68
+        },
+        {
+          "stock_code": "22086",
+          "description": "PAPER CHAIN KIT 50'S CHRISTMAS",
+          "units_sold": 18876,
+          "order_appearances": 1170,
+          "product_net_revenue": 63715.24,
+          "pct_of_total_revenue": 0.65
+        },
+        {
+          "stock_code": "84879",
+          "description": "ASSORTED COLOUR BIRD ORNAMENT",
+          "units_sold": 36282,
+          "order_appearances": 1467,
+          "product_net_revenue": 58792.42,
+          "pct_of_total_revenue": 0.6
+        },
+        {
+          "stock_code": "79321",
+          "description": "CHILLI LIGHTS",
+          "units_sold": 10222,
+          "order_appearances": 667,
+          "product_net_revenue": 53746.66,
+          "pct_of_total_revenue": 0.55
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "title": "Country-Level Revenue & Market Region Segmentation",
+      "business_question": "How does revenue break down across geographic markets (Domestic UK,",
+      "concepts": "INNER JOIN, GROUP BY, Window Function for Market Share %",
+      "sql": "SELECT \n    g.market_region,\n    g.country,\n    COUNT(DISTINCT f.invoice_no) AS total_orders,\n    COUNT(DISTINCT f.customer_id) AS active_customers,\n    ROUND(SUM(f.line_total), 2) AS net_revenue_gbp,\n    ROUND(SUM(f.line_total) * 100.0 / (SELECT SUM(line_total) FROM fact_sales), 2) AS pct_global_revenue\nFROM fact_sales f\nINNER JOIN dim_geography g ON f.country_key = g.country_key\nGROUP BY g.market_region, g.country\nORDER BY net_revenue_gbp DESC\nLIMIT 15;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "market_region",
+        "country",
+        "total_orders",
+        "active_customers",
+        "net_revenue_gbp",
+        "pct_global_revenue"
+      ],
+      "rows": [
+        {
+          "market_region": "Domestic UK",
+          "country": "United Kingdom",
+          "total_orders": 21391,
+          "active_customers": 3950,
+          "net_revenue_gbp": 8189252.3,
+          "pct_global_revenue": 84.01
+        },
+        {
+          "market_region": "European Union",
+          "country": "Netherlands",
+          "total_orders": 100,
+          "active_customers": 9,
+          "net_revenue_gbp": 284661.54,
+          "pct_global_revenue": 2.92
+        },
+        {
+          "market_region": "European Union",
+          "country": "EIRE",
+          "total_orders": 360,
+          "active_customers": 4,
+          "net_revenue_gbp": 262993.38,
+          "pct_global_revenue": 2.7
+        },
+        {
+          "market_region": "European Union",
+          "country": "Germany",
+          "total_orders": 603,
+          "active_customers": 95,
+          "net_revenue_gbp": 221509.47,
+          "pct_global_revenue": 2.27
+        },
+        {
+          "market_region": "European Union",
+          "country": "France",
+          "total_orders": 461,
+          "active_customers": 88,
+          "net_revenue_gbp": 197317.11,
+          "pct_global_revenue": 2.02
+        },
+        {
+          "market_region": "International Export",
+          "country": "Australia",
+          "total_orders": 69,
+          "active_customers": 9,
+          "net_revenue_gbp": 137009.77,
+          "pct_global_revenue": 1.41
+        },
+        {
+          "market_region": "European Union",
+          "country": "Switzerland",
+          "total_orders": 74,
+          "active_customers": 22,
+          "net_revenue_gbp": 56363.05,
+          "pct_global_revenue": 0.58
+        },
+        {
+          "market_region": "European Union",
+          "country": "Spain",
+          "total_orders": 105,
+          "active_customers": 31,
+          "net_revenue_gbp": 54756.03,
+          "pct_global_revenue": 0.56
+        },
+        {
+          "market_region": "European Union",
+          "country": "Belgium",
+          "total_orders": 119,
+          "active_customers": 25,
+          "net_revenue_gbp": 40910.96,
+          "pct_global_revenue": 0.42
+        },
+        {
+          "market_region": "European Union",
+          "country": "Sweden",
+          "total_orders": 46,
+          "active_customers": 8,
+          "net_revenue_gbp": 36585.41,
+          "pct_global_revenue": 0.38
+        },
+        {
+          "market_region": "International Export",
+          "country": "Japan",
+          "total_orders": 28,
+          "active_customers": 8,
+          "net_revenue_gbp": 35340.62,
+          "pct_global_revenue": 0.36
+        },
+        {
+          "market_region": "European Union",
+          "country": "Norway",
+          "total_orders": 40,
+          "active_customers": 10,
+          "net_revenue_gbp": 35163.46,
+          "pct_global_revenue": 0.36
+        },
+        {
+          "market_region": "European Union",
+          "country": "Portugal",
+          "total_orders": 71,
+          "active_customers": 20,
+          "net_revenue_gbp": 29302.97,
+          "pct_global_revenue": 0.3
+        },
+        {
+          "market_region": "European Union",
+          "country": "Finland",
+          "total_orders": 48,
+          "active_customers": 12,
+          "net_revenue_gbp": 22326.74,
+          "pct_global_revenue": 0.23
+        },
+        {
+          "market_region": "International Export",
+          "country": "Channel Islands",
+          "total_orders": 33,
+          "active_customers": 9,
+          "net_revenue_gbp": 20076.39,
+          "pct_global_revenue": 0.21
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "title": "Average Order Value (AOV) by Geographic Market Region",
+      "business_question": "What is the typical basket size / average expenditure per order,",
+      "concepts": "CTE for Order-Level Aggregation, Multi-level Aggregation, AVG",
+      "sql": "WITH OrderLevelMetrics AS (\n    SELECT \n        f.invoice_no,\n        g.market_region,\n        SUM(f.line_total) AS order_total_gbp,\n        SUM(f.quantity) AS order_units\n    FROM fact_sales f\n    INNER JOIN dim_geography g ON f.country_key = g.country_key\n    WHERE f.is_return = 0\n    GROUP BY f.invoice_no, g.market_region\n)\nSELECT \n    market_region,\n    COUNT(invoice_no) AS completed_orders,\n    ROUND(SUM(order_total_gbp), 2) AS total_revenue_gbp,\n    ROUND(AVG(order_total_gbp), 2) AS average_order_value_gbp,\n    ROUND(AVG(order_units), 1) AS avg_items_per_order\nFROM OrderLevelMetrics\nGROUP BY market_region\nORDER BY average_order_value_gbp DESC;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "market_region",
+        "completed_orders",
+        "total_revenue_gbp",
+        "average_order_value_gbp",
+        "avg_items_per_order"
+      ],
+      "rows": [
+        {
+          "market_region": "International Export",
+          "completed_orders": 169,
+          "total_revenue_gbp": 264142.26,
+          "average_order_value_gbp": 1562.97,
+          "avg_items_per_order": 871.0
+        },
+        {
+          "market_region": "European Union",
+          "completed_orders": 1772,
+          "total_revenue_gbp": 1376224.45,
+          "average_order_value_gbp": 776.65,
+          "avg_items_per_order": 439.2
+        },
+        {
+          "market_region": "Domestic UK",
+          "completed_orders": 18019,
+          "total_revenue_gbp": 9001744.09,
+          "average_order_value_gbp": 499.57,
+          "avg_items_per_order": 257.9
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "title": "Unique Customer Count (Registered Loyalty Accounts vs. Guest Checkouts)",
+      "business_question": "How many distinct purchasing customers exist, and what is the",
+      "concepts": "LEFT JOIN, CASE WHEN, COUNT(DISTINCT)",
+      "sql": "SELECT \n    c.customer_type,\n    COUNT(DISTINCT CASE WHEN f.customer_id != -1 THEN f.customer_id ELSE NULL END) AS unique_registered_accounts,\n    COUNT(DISTINCT f.invoice_no) AS total_orders_placed,\n    COUNT(*) AS transaction_lines,\n    ROUND(SUM(f.line_total), 2) AS total_spend_gbp,\n    ROUND(SUM(f.line_total) * 100.0 / (SELECT SUM(line_total) FROM fact_sales), 2) AS revenue_share_pct\nFROM fact_sales f\nINNER JOIN dim_customer c ON f.customer_id = c.customer_id\nGROUP BY c.customer_type;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "customer_type",
+        "unique_registered_accounts",
+        "total_orders_placed",
+        "transaction_lines",
+        "total_spend_gbp",
+        "revenue_share_pct"
+      ],
+      "rows": [
+        {
+          "customer_type": "Guest Checkout",
+          "unique_registered_accounts": 0,
+          "total_orders_placed": 1610,
+          "transaction_lines": 132565,
+          "total_spend_gbp": 1469611.65,
+          "revenue_share_pct": 15.08
+        },
+        {
+          "customer_type": "Registered",
+          "unique_registered_accounts": 4371,
+          "total_orders_placed": 22186,
+          "transaction_lines": 401564,
+          "total_spend_gbp": 8278519.42,
+          "revenue_share_pct": 84.92
+        }
+      ]
+    },
+    {
+      "num": 9,
+      "title": "Impact of Missing Customer IDs (Guest Checkout Revenue Risk)",
+      "business_question": "Exactly how much commercial revenue, order volume, and unit",
+      "concepts": "Explicit Comparison, CASE WHEN, Percentage Impact",
+      "sql": "SELECT \n    CASE WHEN customer_id = -1 THEN 'Guest Checkout (Missing CustomerID)' \n         ELSE 'Registered Customer Account' END AS checkout_category,\n    COUNT(DISTINCT invoice_no) AS distinct_invoices,\n    COUNT(*) AS line_item_records,\n    SUM(quantity) AS net_units_sold,\n    ROUND(SUM(line_total), 2) AS net_revenue_gbp,\n    ROUND(SUM(line_total) * 100.0 / (SELECT SUM(line_total) FROM fact_sales), 2) AS revenue_contribution_pct\nFROM fact_sales\nGROUP BY checkout_category;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "checkout_category",
+        "distinct_invoices",
+        "line_item_records",
+        "net_units_sold",
+        "net_revenue_gbp",
+        "revenue_contribution_pct"
+      ],
+      "rows": [
+        {
+          "checkout_category": "Guest Checkout (Missing CustomerID)",
+          "distinct_invoices": 1610,
+          "line_item_records": 132565,
+          "net_units_sold": 417893,
+          "net_revenue_gbp": 1469611.65,
+          "revenue_contribution_pct": 15.08
+        },
+        {
+          "checkout_category": "Registered Customer Account",
+          "distinct_invoices": 22186,
+          "line_item_records": 401564,
+          "net_units_sold": 4878967,
+          "net_revenue_gbp": 8278519.42,
+          "revenue_contribution_pct": 84.92
+        }
+      ]
+    },
+    {
+      "num": 10,
+      "title": "Customer Purchase Frequency & Repeat Customer Distribution",
+      "business_question": "What percentage of our registered customer base are one-time",
+      "concepts": "CTE, CASE WHEN Binning, Aggregate Percentage Calculation",
+      "sql": "WITH CustomerFrequency AS (\n    SELECT \n        customer_id,\n        total_orders,\n        total_spend,\n        CASE \n            WHEN total_orders = 1 THEN '1 Order (One-Time Buyer)'\n            WHEN total_orders BETWEEN 2 AND 5 THEN '2-5 Orders (Repeat Customer)'\n            WHEN total_orders BETWEEN 6 AND 10 THEN '6-10 Orders (Loyal Customer)'\n            ELSE '10+ Orders (VIP / Power Buyer)'\n        END AS loyalty_tier\n    FROM dim_customer\n    WHERE customer_id != -1\n)\nSELECT \n    loyalty_tier,\n    COUNT(*) AS customer_count,\n    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM dim_customer WHERE customer_id != -1), 2) AS customer_pct,\n    ROUND(SUM(total_spend), 2) AS tier_revenue_gbp,\n    ROUND(SUM(total_spend) * 100.0 / (SELECT SUM(total_spend) FROM dim_customer WHERE customer_id != -1), 2) AS revenue_pct\nFROM CustomerFrequency\nGROUP BY loyalty_tier\nORDER BY customer_count DESC;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "loyalty_tier",
+        "customer_count",
+        "customer_pct",
+        "tier_revenue_gbp",
+        "revenue_pct"
+      ],
+      "rows": [
+        {
+          "loyalty_tier": "2-5 Orders (Repeat Customer)",
+          "customer_count": 1972,
+          "customer_pct": 45.12,
+          "tier_revenue_gbp": 1793433.15,
+          "revenue_pct": 21.66
+        },
+        {
+          "loyalty_tier": "1 Order (One-Time Buyer)",
+          "customer_count": 1312,
+          "customer_pct": 30.02,
+          "tier_revenue_gbp": 431608.86,
+          "revenue_pct": 5.21
+        },
+        {
+          "loyalty_tier": "6-10 Orders (Loyal Customer)",
+          "customer_count": 628,
+          "customer_pct": 14.37,
+          "tier_revenue_gbp": 1423846.41,
+          "revenue_pct": 17.2
+        },
+        {
+          "loyalty_tier": "10+ Orders (VIP / Power Buyer)",
+          "customer_count": 459,
+          "customer_pct": 10.5,
+          "tier_revenue_gbp": 4629631.0,
+          "revenue_pct": 55.92
+        }
+      ]
+    },
+    {
+      "num": 11,
+      "title": "New vs. Returning Customer Monthly Acquisition Cohort",
+      "business_question": "In each calendar month, how much revenue was generated by",
+      "concepts": "CTEs, Subquery Join, Date Parsing, Cohort Identification",
+      "sql": "WITH CustomerCohorts AS (\n    SELECT \n        customer_id,\n        SUBSTR(first_order_date, 1, 7) AS cohort_month\n    FROM dim_customer\n    WHERE customer_id != -1\n),\nMonthlyCustomerSpend AS (\n    SELECT \n        d.year_month,\n        f.customer_id,\n        c.cohort_month,\n        CASE WHEN d.year_month = c.cohort_month THEN 'New Customer' ELSE 'Returning Customer' END AS buyer_status,\n        f.line_total\n    FROM fact_sales f\n    INNER JOIN dim_date d ON f.date_key = d.date_key\n    INNER JOIN CustomerCohorts c ON f.customer_id = c.customer_id\n    WHERE f.customer_id != -1\n)\nSELECT \n    year_month,\n    buyer_status,\n    COUNT(DISTINCT customer_id) AS active_customers,\n    ROUND(SUM(line_total), 2) AS cohort_revenue_gbp\nFROM MonthlyCustomerSpend\nGROUP BY year_month, buyer_status\nORDER BY year_month ASC, buyer_status DESC;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "year_month",
+        "buyer_status",
+        "active_customers",
+        "cohort_revenue_gbp"
+      ],
+      "rows": [
+        {
+          "year_month": "2010-12",
+          "buyer_status": "New Customer",
+          "active_customers": 948,
+          "cohort_revenue_gbp": 552372.86
+        },
+        {
+          "year_month": "2011-01",
+          "buyer_status": "Returning Customer",
+          "active_customers": 362,
+          "cohort_revenue_gbp": 271081.05
+        },
+        {
+          "year_month": "2011-01",
+          "buyer_status": "New Customer",
+          "active_customers": 421,
+          "cohort_revenue_gbp": 202650.85
+        },
+        {
+          "year_month": "2011-02",
+          "buyer_status": "Returning Customer",
+          "active_customers": 418,
+          "cohort_revenue_gbp": 286428.67
+        },
+        {
+          "year_month": "2011-02",
+          "buyer_status": "New Customer",
+          "active_customers": 380,
+          "cohort_revenue_gbp": 149105.4
+        },
+        {
+          "year_month": "2011-03",
+          "buyer_status": "Returning Customer",
+          "active_customers": 580,
+          "cohort_revenue_gbp": 389087.82
+        },
+        {
+          "year_month": "2011-03",
+          "buyer_status": "New Customer",
+          "active_customers": 440,
+          "cohort_revenue_gbp": 189488.39
+        },
+        {
+          "year_month": "2011-04",
+          "buyer_status": "Returning Customer",
+          "active_customers": 600,
+          "cohort_revenue_gbp": 305660.86
+        },
+        {
+          "year_month": "2011-04",
+          "buyer_status": "New Customer",
+          "active_customers": 299,
+          "cohort_revenue_gbp": 119561.81
+        },
+        {
+          "year_month": "2011-05",
+          "buyer_status": "Returning Customer",
+          "active_customers": 800,
+          "cohort_revenue_gbp": 531517.41
+        },
+        {
+          "year_month": "2011-05",
+          "buyer_status": "New Customer",
+          "active_customers": 279,
+          "cohort_revenue_gbp": 115494.26
+        },
+        {
+          "year_month": "2011-06",
+          "buyer_status": "Returning Customer",
+          "active_customers": 816,
+          "cohort_revenue_gbp": 514664.16
+        },
+        {
+          "year_month": "2011-06",
+          "buyer_status": "New Customer",
+          "active_customers": 235,
+          "cohort_revenue_gbp": 92198.36
+        },
+        {
+          "year_month": "2011-07",
+          "buyer_status": "Returning Customer",
+          "active_customers": 802,
+          "cohort_revenue_gbp": 507377.8
+        },
+        {
+          "year_month": "2011-07",
+          "buyer_status": "New Customer",
+          "active_customers": 191,
+          "cohort_revenue_gbp": 65734.52
+        },
+        {
+          "year_month": "2011-08",
+          "buyer_status": "Returning Customer",
+          "active_customers": 813,
+          "cohort_revenue_gbp": 537574.82
+        },
+        {
+          "year_month": "2011-08",
+          "buyer_status": "New Customer",
+          "active_customers": 167,
+          "cohort_revenue_gbp": 77503.27
+        },
+        {
+          "year_month": "2011-09",
+          "buyer_status": "Returning Customer",
+          "active_customers": 1004,
+          "cohort_revenue_gbp": 776420.85
+        },
+        {
+          "year_month": "2011-09",
+          "buyer_status": "New Customer",
+          "active_customers": 298,
+          "cohort_revenue_gbp": 152935.38
+        },
+        {
+          "year_month": "2011-10",
+          "buyer_status": "Returning Customer",
+          "active_customers": 1073,
+          "cohort_revenue_gbp": 819672.26
+        },
+        {
+          "year_month": "2011-10",
+          "buyer_status": "New Customer",
+          "active_customers": 352,
+          "cohort_revenue_gbp": 153634.12
+        },
+        {
+          "year_month": "2011-11",
+          "buyer_status": "Returning Customer",
+          "active_customers": 1390,
+          "cohort_revenue_gbp": 994044.48
+        },
+        {
+          "year_month": "2011-11",
+          "buyer_status": "New Customer",
+          "active_customers": 320,
+          "cohort_revenue_gbp": 132770.59
+        },
+        {
+          "year_month": "2011-12",
+          "buyer_status": "Returning Customer",
+          "active_customers": 645,
+          "cohort_revenue_gbp": 314816.68
+        },
+        {
+          "year_month": "2011-12",
+          "buyer_status": "New Customer",
+          "active_customers": 41,
+          "cohort_revenue_gbp": 26722.75
+        }
+      ]
+    },
+    {
+      "num": 12,
+      "title": "Top 10 Registered Customers by Lifetime Revenue",
+      "business_question": "Who are our top 10 most valuable client accounts, where are",
+      "concepts": "INNER JOIN, Filtering Sentinels, ORDER BY, LIMIT",
+      "sql": "SELECT \n    c.customer_id,\n    c.country,\n    c.customer_type,\n    c.total_orders,\n    c.total_items_bought,\n    c.first_order_date,\n    c.last_order_date,\n    ROUND(c.total_spend, 2) AS lifetime_spend_gbp\nFROM dim_customer c\nWHERE c.customer_id != -1\nORDER BY c.total_spend DESC\nLIMIT 10;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "customer_id",
+        "country",
+        "customer_type",
+        "total_orders",
+        "total_items_bought",
+        "first_order_date",
+        "last_order_date",
+        "lifetime_spend_gbp"
+      ],
+      "rows": [
+        {
+          "customer_id": 14646,
+          "country": "Netherlands",
+          "customer_type": "Registered",
+          "total_orders": 76,
+          "total_items_bought": 196143,
+          "first_order_date": "2010-12-20",
+          "last_order_date": "2011-12-08",
+          "lifetime_spend_gbp": 279489.02
+        },
+        {
+          "customer_id": 18102,
+          "country": "United Kingdom",
+          "customer_type": "Registered",
+          "total_orders": 62,
+          "total_items_bought": 64122,
+          "first_order_date": "2010-12-07",
+          "last_order_date": "2011-12-09",
+          "lifetime_spend_gbp": 256438.49
+        },
+        {
+          "customer_id": 17450,
+          "country": "United Kingdom",
+          "customer_type": "Registered",
+          "total_orders": 55,
+          "total_items_bought": 69009,
+          "first_order_date": "2010-12-07",
+          "last_order_date": "2011-12-01",
+          "lifetime_spend_gbp": 187322.17
+        },
+        {
+          "customer_id": 14911,
+          "country": "EIRE",
+          "customer_type": "Registered",
+          "total_orders": 248,
+          "total_items_bought": 76905,
+          "first_order_date": "2010-12-01",
+          "last_order_date": "2011-12-08",
+          "lifetime_spend_gbp": 132458.73
+        },
+        {
+          "customer_id": 12415,
+          "country": "Australia",
+          "customer_type": "Registered",
+          "total_orders": 26,
+          "total_items_bought": 76946,
+          "first_order_date": "2011-01-06",
+          "last_order_date": "2011-11-15",
+          "lifetime_spend_gbp": 123725.45
+        },
+        {
+          "customer_id": 14156,
+          "country": "EIRE",
+          "customer_type": "Registered",
+          "total_orders": 66,
+          "total_items_bought": 56908,
+          "first_order_date": "2010-12-02",
+          "last_order_date": "2011-11-30",
+          "lifetime_spend_gbp": 113214.59
+        },
+        {
+          "customer_id": 17511,
+          "country": "United Kingdom",
+          "customer_type": "Registered",
+          "total_orders": 46,
+          "total_items_bought": 63012,
+          "first_order_date": "2010-12-01",
+          "last_order_date": "2011-12-07",
+          "lifetime_spend_gbp": 88125.38
+        },
+        {
+          "customer_id": 16684,
+          "country": "United Kingdom",
+          "customer_type": "Registered",
+          "total_orders": 31,
+          "total_items_bought": 49390,
+          "first_order_date": "2010-12-16",
+          "last_order_date": "2011-12-05",
+          "lifetime_spend_gbp": 65892.08
+        },
+        {
+          "customer_id": 13694,
+          "country": "United Kingdom",
+          "customer_type": "Registered",
+          "total_orders": 60,
+          "total_items_bought": 61899,
+          "first_order_date": "2010-12-01",
+          "last_order_date": "2011-12-06",
+          "lifetime_spend_gbp": 62690.54
+        },
+        {
+          "customer_id": 15311,
+          "country": "United Kingdom",
+          "customer_type": "Registered",
+          "total_orders": 118,
+          "total_items_bought": 37673,
+          "first_order_date": "2010-12-01",
+          "last_order_date": "2011-12-09",
+          "lifetime_spend_gbp": 59284.19
+        }
+      ]
+    },
+    {
+      "num": 13,
+      "title": "Customer Revenue Ranking and Decile Segmentation (Window Functions)",
+      "business_question": "How do registered customers rank relative to one another,",
+      "concepts": "Window Functions (ROW_NUMBER, DENSE_RANK, NTILE)",
+      "sql": "WITH RankedCustomers AS (\n    SELECT \n        customer_id,\n        country,\n        total_orders,\n        ROUND(total_spend, 2) AS total_spend_gbp,\n        ROW_NUMBER() OVER (ORDER BY total_spend DESC) AS revenue_rank,\n        DENSE_RANK() OVER (ORDER BY total_spend DESC) AS dense_rank,\n        NTILE(10) OVER (ORDER BY total_spend DESC) AS spend_decile\n    FROM dim_customer\n    WHERE customer_id != -1\n)\nSELECT \n    revenue_rank,\n    customer_id,\n    country,\n    total_orders,\n    total_spend_gbp,\n    spend_decile,\n    CASE WHEN spend_decile = 1 THEN 'Top 10% VIP Tier'\n         WHEN spend_decile <= 3 THEN 'Top 30% Core Tier'\n         ELSE 'Remaining 70% Mass Tier' END AS strategic_segment\nFROM RankedCustomers\nWHERE revenue_rank <= 15 OR revenue_rank IN (100, 500, 1000)\nORDER BY revenue_rank ASC;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "revenue_rank",
+        "customer_id",
+        "country",
+        "total_orders",
+        "total_spend_gbp",
+        "spend_decile",
+        "strategic_segment"
+      ],
+      "rows": [
+        {
+          "revenue_rank": 1,
+          "customer_id": 14646,
+          "country": "Netherlands",
+          "total_orders": 76,
+          "total_spend_gbp": 279489.02,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 2,
+          "customer_id": 18102,
+          "country": "United Kingdom",
+          "total_orders": 62,
+          "total_spend_gbp": 256438.49,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 3,
+          "customer_id": 17450,
+          "country": "United Kingdom",
+          "total_orders": 55,
+          "total_spend_gbp": 187322.17,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 4,
+          "customer_id": 14911,
+          "country": "EIRE",
+          "total_orders": 248,
+          "total_spend_gbp": 132458.73,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 5,
+          "customer_id": 12415,
+          "country": "Australia",
+          "total_orders": 26,
+          "total_spend_gbp": 123725.45,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 6,
+          "customer_id": 14156,
+          "country": "EIRE",
+          "total_orders": 66,
+          "total_spend_gbp": 113214.59,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 7,
+          "customer_id": 17511,
+          "country": "United Kingdom",
+          "total_orders": 46,
+          "total_spend_gbp": 88125.38,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 8,
+          "customer_id": 16684,
+          "country": "United Kingdom",
+          "total_orders": 31,
+          "total_spend_gbp": 65892.08,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 9,
+          "customer_id": 13694,
+          "country": "United Kingdom",
+          "total_orders": 60,
+          "total_spend_gbp": 62690.54,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 10,
+          "customer_id": 15311,
+          "country": "United Kingdom",
+          "total_orders": 118,
+          "total_spend_gbp": 59284.19,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 11,
+          "customer_id": 13089,
+          "country": "United Kingdom",
+          "total_orders": 118,
+          "total_spend_gbp": 57322.13,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 12,
+          "customer_id": 14096,
+          "country": "United Kingdom",
+          "total_orders": 34,
+          "total_spend_gbp": 57120.91,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 13,
+          "customer_id": 15061,
+          "country": "United Kingdom",
+          "total_orders": 55,
+          "total_spend_gbp": 54228.74,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 14,
+          "customer_id": 16029,
+          "country": "United Kingdom",
+          "total_orders": 76,
+          "total_spend_gbp": 53168.69,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 15,
+          "customer_id": 17949,
+          "country": "United Kingdom",
+          "total_orders": 52,
+          "total_spend_gbp": 52750.84,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 100,
+          "customer_id": 13001,
+          "country": "United Kingdom",
+          "total_orders": 15,
+          "total_spend_gbp": 9765.07,
+          "spend_decile": 1,
+          "strategic_segment": "Top 10% VIP Tier"
+        },
+        {
+          "revenue_rank": 500,
+          "customer_id": 17863,
+          "country": "United Kingdom",
+          "total_orders": 6,
+          "total_spend_gbp": 3160.0,
+          "spend_decile": 2,
+          "strategic_segment": "Top 30% Core Tier"
+        },
+        {
+          "revenue_rank": 1000,
+          "customer_id": 15220,
+          "country": "United Kingdom",
+          "total_orders": 7,
+          "total_spend_gbp": 1758.92,
+          "spend_decile": 3,
+          "strategic_segment": "Top 30% Core Tier"
+        }
+      ]
+    },
+    {
+      "num": 14,
+      "title": "Running Cumulative Monthly Revenue (Running Total Window Function)",
+      "business_question": "How did total revenue accumulate day-by-day or month-by-month",
+      "concepts": "Window Function (SUM OVER ROWS BETWEEN UNBOUNDED PRECEDING)",
+      "sql": "WITH MonthlyTotals AS (\n    SELECT \n        d.year_month,\n        ROUND(SUM(f.line_total), 2) AS monthly_net_revenue\n    FROM fact_sales f\n    INNER JOIN dim_date d ON f.date_key = d.date_key\n    GROUP BY d.year_month\n)\nSELECT \n    year_month,\n    monthly_net_revenue,\n    ROUND(SUM(monthly_net_revenue) OVER (\n        ORDER BY year_month \n        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ), 2) AS cumulative_running_revenue_gbp\nFROM MonthlyTotals\nORDER BY year_month ASC;\n\n\n-- ------------------------------------------------------------------------------",
+      "columns": [
+        "year_month",
+        "monthly_net_revenue",
+        "cumulative_running_revenue_gbp"
+      ],
+      "rows": [
+        {
+          "year_month": "2010-12",
+          "monthly_net_revenue": 746723.61,
+          "cumulative_running_revenue_gbp": 746723.61
+        },
+        {
+          "year_month": "2011-01",
+          "monthly_net_revenue": 558448.56,
+          "cumulative_running_revenue_gbp": 1305172.17
+        },
+        {
+          "year_month": "2011-02",
+          "monthly_net_revenue": 497026.41,
+          "cumulative_running_revenue_gbp": 1802198.58
+        },
+        {
+          "year_month": "2011-03",
+          "monthly_net_revenue": 682013.98,
+          "cumulative_running_revenue_gbp": 2484212.56
+        },
+        {
+          "year_month": "2011-04",
+          "monthly_net_revenue": 492367.84,
+          "cumulative_running_revenue_gbp": 2976580.4
+        },
+        {
+          "year_month": "2011-05",
+          "monthly_net_revenue": 722094.1,
+          "cumulative_running_revenue_gbp": 3698674.5
+        },
+        {
+          "year_month": "2011-06",
+          "monthly_net_revenue": 689977.23,
+          "cumulative_running_revenue_gbp": 4388651.73
+        },
+        {
+          "year_month": "2011-07",
+          "monthly_net_revenue": 680156.99,
+          "cumulative_running_revenue_gbp": 5068808.72
+        },
+        {
+          "year_month": "2011-08",
+          "monthly_net_revenue": 703510.58,
+          "cumulative_running_revenue_gbp": 5772319.3
+        },
+        {
+          "year_month": "2011-09",
+          "monthly_net_revenue": 1017596.68,
+          "cumulative_running_revenue_gbp": 6789915.98
+        },
+        {
+          "year_month": "2011-10",
+          "monthly_net_revenue": 1069368.23,
+          "cumulative_running_revenue_gbp": 7859284.21
+        },
+        {
+          "year_month": "2011-11",
+          "monthly_net_revenue": 1456145.8,
+          "cumulative_running_revenue_gbp": 9315430.01
+        },
+        {
+          "year_month": "2011-12",
+          "monthly_net_revenue": 432701.06,
+          "cumulative_running_revenue_gbp": 9748131.07
+        }
+      ]
+    },
+    {
+      "num": 15,
+      "title": "Returns and Cancellation Rate Analysis by Major Country Market",
+      "business_question": "What is the cancellation/return rate percentage across our",
+      "concepts": "CTE, Aggregations with CASE WHEN, HAVING Filter, Sorting by Rate",
+      "sql": "WITH MarketReturnMetrics AS (\n    SELECT \n        g.country,\n        g.market_region,\n        COUNT(DISTINCT f.invoice_no) AS total_orders,\n        ROUND(SUM(CASE WHEN f.is_return = 0 THEN f.line_total ELSE 0 END), 2) AS gross_sales,\n        ROUND(ABS(SUM(CASE WHEN f.is_return = 1 THEN f.line_total ELSE 0 END)), 2) AS return_refund_val,\n        SUM(CASE WHEN f.is_return = 1 THEN 1 ELSE 0 END) AS return_line_count,\n        COUNT(*) AS total_line_count\n    FROM fact_sales f\n    INNER JOIN dim_geography g ON f.country_key = g.country_key\n    GROUP BY g.country, g.market_region\n    HAVING gross_sales > 10000.00\n)\nSELECT \n    country,\n    market_region,\n    total_orders,\n    gross_sales,\n    return_refund_val,\n    ROUND(return_refund_val * 100.0 / gross_sales, 2) AS refund_value_rate_pct,\n    ROUND(return_line_count * 100.0 / total_line_count, 2) AS return_frequency_pct\nFROM MarketReturnMetrics\nORDER BY refund_value_rate_pct DESC",
+      "columns": [
+        "country",
+        "market_region",
+        "total_orders",
+        "gross_sales",
+        "return_refund_val",
+        "refund_value_rate_pct",
+        "return_frequency_pct"
+      ],
+      "rows": [
+        {
+          "country": "Singapore",
+          "market_region": "International Export",
+          "total_orders": 10,
+          "gross_sales": 21279.29,
+          "return_refund_val": 12158.9,
+          "refund_value_rate_pct": 57.14,
+          "return_frequency_pct": 3.06
+        },
+        {
+          "country": "Hong Kong",
+          "market_region": "International Export",
+          "total_orders": 15,
+          "gross_sales": 15483.0,
+          "return_refund_val": 5574.76,
+          "refund_value_rate_pct": 36.01,
+          "return_frequency_pct": 1.41
+        },
+        {
+          "country": "Portugal",
+          "market_region": "European Union",
+          "total_orders": 71,
+          "gross_sales": 33683.05,
+          "return_refund_val": 4380.08,
+          "refund_value_rate_pct": 13.0,
+          "return_frequency_pct": 1.19
+        },
+        {
+          "country": "Spain",
+          "market_region": "European Union",
+          "total_orders": 105,
+          "gross_sales": 61558.56,
+          "return_refund_val": 6802.53,
+          "refund_value_rate_pct": 11.05,
+          "return_frequency_pct": 1.9
+        },
+        {
+          "country": "United Kingdom",
+          "market_region": "Domestic UK",
+          "total_orders": 21391,
+          "gross_sales": 9001744.09,
+          "return_refund_val": 812491.79,
+          "refund_value_rate_pct": 9.03,
+          "return_frequency_pct": 1.6
+        },
+        {
+          "country": "EIRE",
+          "market_region": "European Union",
+          "total_orders": 360,
+          "gross_sales": 283140.52,
+          "return_refund_val": 20147.14,
+          "refund_value_rate_pct": 7.12,
+          "return_frequency_pct": 3.68
+        },
+        {
+          "country": "France",
+          "market_region": "European Union",
+          "total_orders": 461,
+          "gross_sales": 209625.37,
+          "return_refund_val": 12308.26,
+          "refund_value_rate_pct": 5.87,
+          "return_frequency_pct": 1.73
+        },
+        {
+          "country": "Japan",
+          "market_region": "International Export",
+          "total_orders": 28,
+          "gross_sales": 37416.37,
+          "return_refund_val": 2075.75,
+          "refund_value_rate_pct": 5.55,
+          "return_frequency_pct": 10.34
+        },
+        {
+          "country": "Cyprus",
+          "market_region": "European Union",
+          "total_orders": 20,
+          "gross_sales": 13502.85,
+          "return_refund_val": 644.09,
+          "refund_value_rate_pct": 4.77,
+          "return_frequency_pct": 1.31
+        },
+        {
+          "country": "Sweden",
+          "market_region": "European Union",
+          "total_orders": 46,
+          "gross_sales": 38367.83,
+          "return_refund_val": 1782.42,
+          "refund_value_rate_pct": 4.65,
+          "return_frequency_pct": 2.39
+        },
+        {
+          "country": "Italy",
+          "market_region": "European Union",
+          "total_orders": 55,
+          "gross_sales": 17483.24,
+          "return_refund_val": 592.73,
+          "refund_value_rate_pct": 3.39,
+          "return_frequency_pct": 5.6
+        },
+        {
+          "country": "Germany",
+          "market_region": "European Union",
+          "total_orders": 603,
+          "gross_sales": 228678.4,
+          "return_refund_val": 7168.93,
+          "refund_value_rate_pct": 3.13,
+          "return_frequency_pct": 4.78
+        },
+        {
+          "country": "Norway",
+          "market_region": "European Union",
+          "total_orders": 40,
+          "gross_sales": 36165.44,
+          "return_refund_val": 1001.98,
+          "refund_value_rate_pct": 2.77,
+          "return_frequency_pct": 1.29
+        },
+        {
+          "country": "Channel Islands",
+          "market_region": "International Export",
+          "total_orders": 33,
+          "gross_sales": 20440.54,
+          "return_refund_val": 364.15,
+          "refund_value_rate_pct": 1.78,
+          "return_frequency_pct": 1.32
+        },
+        {
+          "country": "Switzerland",
+          "market_region": "European Union",
+          "total_orders": 74,
+          "gross_sales": 57067.6,
+          "return_refund_val": 704.55,
+          "refund_value_rate_pct": 1.23,
+          "return_frequency_pct": 1.76
+        },
+        {
+          "country": "Australia",
+          "market_region": "International Export",
+          "total_orders": 69,
+          "gross_sales": 138453.81,
+          "return_refund_val": 1444.04,
+          "refund_value_rate_pct": 1.04,
+          "return_frequency_pct": 5.9
+        },
+        {
+          "country": "Denmark",
+          "market_region": "European Union",
+          "total_orders": 21,
+          "gross_sales": 18955.34,
+          "return_refund_val": 187.2,
+          "refund_value_rate_pct": 0.99,
+          "return_frequency_pct": 2.31
+        },
+        {
+          "country": "Finland",
+          "market_region": "European Union",
+          "total_orders": 48,
+          "gross_sales": 22546.08,
+          "return_refund_val": 219.34,
+          "refund_value_rate_pct": 0.97,
+          "return_frequency_pct": 1.44
+        },
+        {
+          "country": "Belgium",
+          "market_region": "European Union",
+          "total_orders": 119,
+          "gross_sales": 41196.34,
+          "return_refund_val": 285.38,
+          "refund_value_rate_pct": 0.69,
+          "return_frequency_pct": 1.84
+        },
+        {
+          "country": "Austria",
+          "market_region": "European Union",
+          "total_orders": 19,
+          "gross_sales": 10198.68,
+          "return_refund_val": 44.36,
+          "refund_value_rate_pct": 0.43,
+          "return_frequency_pct": 0.75
+        },
+        {
+          "country": "Netherlands",
+          "market_region": "European Union",
+          "total_orders": 100,
+          "gross_sales": 285446.34,
+          "return_refund_val": 784.8,
+          "refund_value_rate_pct": 0.27,
+          "return_frequency_pct": 0.34
+        }
+      ]
+    }
   ]
 }

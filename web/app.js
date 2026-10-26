@@ -105,6 +105,10 @@ async function initDashboard() {
   renderProductCharts();
   renderCustomerCharts();
   renderGeographyCharts();
+  initSqlStudio();
+  initWhatIfSimulator();
+  initExportButtons();
+  initTableSorting();
 }
 
 // -------------------------------------------------------------
@@ -366,8 +370,12 @@ function renderProductCharts() {
 
   // Populate Product Table
   const tbody = document.querySelector('#table-top-products tbody');
+  const countDisplay = document.getElementById('product-count-display');
   function populateProductTable(list) {
     tbody.innerHTML = '';
+    if (countDisplay) {
+      countDisplay.textContent = `Showing ${list.length} of ${topRev.length} items`;
+    }
     list.forEach((p, idx) => {
       const row = document.createElement('tr');
       row.innerHTML = `
@@ -560,6 +568,280 @@ function renderGeographyCharts() {
       <td><strong>${c.pct_global_revenue.toFixed(2)}%</strong></td>
     `;
     tbody.appendChild(row);
+  });
+}
+
+// -------------------------------------------------------------
+// TAB 6: INTERACTIVE SQL QUERY STUDIO & DATA MODEL
+// -------------------------------------------------------------
+function initSqlStudio() {
+  const select = document.getElementById('sql-query-select');
+  if (!select || !appData || !appData.sql_queries_library) return;
+
+  select.innerHTML = '';
+  appData.sql_queries_library.forEach(q => {
+    const opt = document.createElement('option');
+    opt.value = q.num;
+    opt.textContent = `Query ${String(q.num).padStart(2, '0')}: ${q.title}`;
+    select.appendChild(opt);
+  });
+
+  function renderSelectedQuery(num) {
+    const q = appData.sql_queries_library.find(item => item.num === Number(num));
+    if (!q) return;
+
+    // Business Question
+    const bqEl = document.getElementById('sql-business-question');
+    if (bqEl) bqEl.textContent = q.business_question || 'Analytical business query executed against data/processed/retailpulse.db';
+
+    // Concept Tags
+    const tagsEl = document.getElementById('sql-concept-tags');
+    if (tagsEl) {
+      tagsEl.innerHTML = '';
+      const concepts = (q.concepts || 'SQL Aggregations').split(',').map(c => c.trim());
+      concepts.forEach(c => {
+        const span = document.createElement('span');
+        span.className = 'concept-tag';
+        span.textContent = c;
+        tagsEl.appendChild(span);
+      });
+    }
+
+    // Code
+    const codeEl = document.getElementById('sql-code-display');
+    if (codeEl) codeEl.textContent = q.sql;
+
+    // Row Count
+    const countEl = document.getElementById('sql-row-count');
+    if (countEl) countEl.textContent = q.rows ? q.rows.length : 0;
+
+    // Results Table
+    const thead = document.getElementById('sql-results-thead');
+    const tbody = document.getElementById('sql-results-tbody');
+    if (thead && tbody) {
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      if (q.columns && q.columns.length > 0) {
+        const trHead = document.createElement('tr');
+        q.columns.forEach(col => {
+          const th = document.createElement('th');
+          th.textContent = col.replace(/_/g, ' ').toUpperCase();
+          trHead.appendChild(th);
+        });
+        thead.appendChild(trHead);
+
+        if (q.rows && q.rows.length > 0) {
+          q.rows.forEach(row => {
+            const tr = document.createElement('tr');
+            q.columns.forEach(col => {
+              const td = document.createElement('td');
+              const val = row[col];
+              if (typeof val === 'number') {
+                if (col.includes('revenue') || col.includes('gbp') || col.includes('spend') || col.includes('price')) {
+                  td.textContent = formatGBP(val);
+                  td.className = 'mono positive';
+                } else if (col.includes('pct') || col.includes('rate') || col.includes('share')) {
+                  td.textContent = val.toFixed(2) + '%';
+                  td.className = 'mono';
+                } else {
+                  td.textContent = formatNumber(val);
+                  td.className = 'mono';
+                }
+              } else {
+                td.textContent = val ?? 'N/A';
+              }
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+        }
+      }
+    }
+  }
+
+  select.addEventListener('change', e => {
+    renderSelectedQuery(e.target.value);
+  });
+
+  // Initial render with Query 1
+  renderSelectedQuery(1);
+
+  // Copy SQL button
+  const copyBtn = document.getElementById('btn-copy-sql');
+  const copyText = document.getElementById('copy-text');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const code = document.getElementById('sql-code-display').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        if (copyText) {
+          const orig = copyText.textContent;
+          copyText.textContent = '✓ Copied!';
+          setTimeout(() => { copyText.textContent = orig; }, 1500);
+        }
+      });
+    });
+  }
+
+  // Export Query CSV button
+  const exportBtn = document.getElementById('btn-export-query-results');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const qNum = select.value;
+      const q = appData.sql_queries_library.find(item => item.num === Number(qNum));
+      const filename = `RetailPulse_Query_${String(qNum).padStart(2, '0')}_results.csv`;
+      exportTableToCSV('table-sql-results', filename);
+    });
+  }
+}
+
+// -------------------------------------------------------------
+// WHAT-IF STRATEGIC SCENARIO SIMULATOR
+// -------------------------------------------------------------
+function initWhatIfSimulator() {
+  const sliderGuest = document.getElementById('slider-guest-conv');
+  const displayGuest = document.getElementById('val-guest-conv');
+  const resAccounts = document.getElementById('res-guest-accounts');
+  const resRepeat = document.getElementById('res-guest-repeat');
+  const resRevenue = document.getElementById('res-guest-revenue');
+
+  function updateGuestSim() {
+    if (!sliderGuest) return;
+    const rate = Number(sliderGuest.value);
+    if (displayGuest) displayGuest.textContent = rate + '%';
+
+    // 1,610 guest orders, £1,469,611.65 revenue
+    const newAccounts = Math.round(1610 * (rate / 100));
+    // Repeat rate among registered is 69.98%
+    const repeatOrders = Math.round(newAccounts * 0.6998 * 2.4);
+    // Estimated average lifetime uplift per converted account
+    const revUplift = Math.round(newAccounts * 686.60);
+
+    if (resAccounts) resAccounts.textContent = `+${formatNumber(newAccounts)}`;
+    if (resRepeat) resRepeat.textContent = `+${formatNumber(repeatOrders)} orders`;
+    if (resRevenue) resRevenue.textContent = `+${formatGBP(revUplift)}`;
+  }
+
+  if (sliderGuest) {
+    sliderGuest.addEventListener('input', updateGuestSim);
+    updateGuestSim();
+  }
+
+  const sliderRefund = document.getElementById('slider-refund-reduct');
+  const displayRefund = document.getElementById('val-refund-reduct');
+  const resNewRate = document.getElementById('res-new-rate');
+  const resSavedLines = document.getElementById('res-saved-lines');
+  const resRefundSavings = document.getElementById('res-refund-savings');
+
+  function updateRefundSim() {
+    if (!sliderRefund) return;
+    const reduction = Number(sliderRefund.value);
+    if (displayRefund) displayRefund.textContent = `-${reduction.toFixed(1)}%`;
+
+    const baselineRate = 8.40;
+    const baselineGross = 10642110.80;
+    const newRate = Math.max(0, baselineRate - reduction);
+    const savings = Math.round(baselineGross * (reduction / 100));
+    const savedLines = Math.round(9251 * (reduction / baselineRate));
+
+    if (resNewRate) resNewRate.textContent = `${newRate.toFixed(2)}%`;
+    if (resSavedLines) resSavedLines.textContent = `~${formatNumber(savedLines)} lines`;
+    if (resRefundSavings) resRefundSavings.textContent = `+${formatGBP(savings)}`;
+  }
+
+  if (sliderRefund) {
+    sliderRefund.addEventListener('input', updateRefundSim);
+    updateRefundSim();
+  }
+}
+
+// -------------------------------------------------------------
+// UNIVERSAL CSV EXPORTER UTILITY
+// -------------------------------------------------------------
+function exportTableToCSV(tableId, filename) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  const rows = [];
+  const headerCells = table.querySelectorAll('thead th');
+  if (headerCells.length > 0) {
+    const headers = Array.from(headerCells).map(th => `"${th.textContent.trim().replace(/"/g, '""')}"`);
+    rows.push(headers.join(','));
+  }
+
+  const bodyRows = table.querySelectorAll('tbody tr');
+  bodyRows.forEach(tr => {
+    const cells = tr.querySelectorAll('td');
+    const rowData = Array.from(cells).map(td => {
+      let text = td.textContent.trim();
+      text = text.replace(/\s+/g, ' ');
+      return `"${text.replace(/"/g, '""')}"`;
+    });
+    rows.push(rowData.join(','));
+  });
+
+  const csvContent = "\uFEFF" + rows.join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || 'retailpulse_export.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function initExportButtons() {
+  const bindExport = (btnId, tableId, filename) => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', () => exportTableToCSV(tableId, filename));
+    }
+  };
+
+  bindExport('btn-export-monthly', 'table-monthly-trends', 'RetailPulse_Monthly_Financial_Statement.csv');
+  bindExport('btn-export-products', 'table-top-products', 'RetailPulse_Product_Catalog_Leaderboard.csv');
+  bindExport('btn-export-customers', 'table-top-customers', 'RetailPulse_Top_VIP_Customers.csv');
+  bindExport('btn-export-geography', 'table-country-revenue', 'RetailPulse_Country_Market_Segmentation.csv');
+}
+
+// -------------------------------------------------------------
+// DYNAMIC TABLE COLUMN SORTING
+// -------------------------------------------------------------
+function initTableSorting() {
+  const tables = document.querySelectorAll('.data-table');
+  tables.forEach(table => {
+    const headers = table.querySelectorAll('thead th');
+    headers.forEach((th, colIdx) => {
+      th.classList.add('sortable');
+      th.title = 'Click to sort ascending/descending';
+      let asc = true;
+      th.addEventListener('click', () => {
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const aCell = a.children[colIdx];
+          const bCell = b.children[colIdx];
+          const aText = aCell ? aCell.textContent.trim() : '';
+          const bText = bCell ? bCell.textContent.trim() : '';
+          
+          const aClean = aText.replace(/[^0-9.-]+/g, '');
+          const bClean = bText.replace(/[^0-9.-]+/g, '');
+          const aNum = parseFloat(aClean);
+          const bNum = parseFloat(bClean);
+          
+          if (!isNaN(aNum) && !isNaN(bNum) && aClean.length > 0 && bClean.length > 0) {
+            return asc ? aNum - bNum : bNum - aNum;
+          }
+          return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+        });
+        asc = !asc;
+        tbody.innerHTML = '';
+        rows.forEach(r => tbody.appendChild(r));
+      });
+    });
   });
 }
 

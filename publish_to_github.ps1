@@ -41,6 +41,7 @@ Write-Host "[2/4] Active Branch: main" -ForegroundColor Green
 # 4. Stage safe project files
 Write-Host "[3/4] Staging audited project files..." -ForegroundColor Yellow
 git add .gitignore
+git add .github/
 git add README.md
 git add LICENSE
 git add docs/

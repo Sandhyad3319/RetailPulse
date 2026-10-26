@@ -1,5 +1,6 @@
 # RetailPulse — Retail Sales & Customer Intelligence Analytics Platform
 
+[![CI](https://github.com/Sandhyad3319/RetailPulse/actions/workflows/ci.yml/badge.svg)](https://github.com/Sandhyad3319/RetailPulse/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite_3-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Power BI](https://img.shields.io/badge/BI_Tool-Power_BI_Desktop-F2C811?logo=powerbi&logoColor=black)](https://powerbi.microsoft.com/)
@@ -169,21 +170,26 @@ RetailPulse provides two complementary presentation layers for business stakehol
 For instant review without requiring Microsoft Power BI Desktop installed, RetailPulse includes an executive dark-mode dashboard built with Vanilla HTML5, CSS3, JavaScript, and Chart.js.
 
 - **Instant Zero-Config Launch**: Run `python python/serve_dashboard.py` and navigate to `http://localhost:8080`.
-- **5 Interactive Analysis Tabs**:
-  1. **Executive Overview**: High-level KPI banner, monthly net revenue & order volume combo chart, and market channel distribution donut.
-  2. **Sales Trends & Seasonality**: Monthly gross sales vs. refund deductions bar chart, cumulative revenue curve to £9.75M, and audited financial table.
-  3. **Product Performance**: Top 10 merchandise items by revenue and physical unit volume, with real-time text search filtering.
-  4. **Customer Intelligence & VIPs**: Repeat purchase loyalty tier distribution, guest checkout revenue split, and top 10 VIP customer rankings.
-  5. **Geographic Markets**: Regional Average Order Value (AOV) comparison, international return friction ranking, and country-level league table.
-- **Embedded Lightweight Payload**: Powered by `web/dashboard_data.json` (34 KB), ensuring sub-second load times with zero external database dependencies.
+- **6 Interactive Analysis Tabs**:
+  1. **Executive Overview & Strategy Simulator**: High-level KPI banner, monthly net revenue & order volume combo chart, channel split donut, and an interactive **What-If Scenario Simulator** (simulating guest conversion uplifts and refund mitigation margin savings in real time).
+  2. **Sales Trends & Seasonality**: Monthly gross sales vs. refund deductions bar chart, cumulative revenue curve to £9.75M milestone, and audited financial table with **1-click CSV export**.
+  3. **Product Performance**: Top 10 merchandise items by revenue and physical unit volume, real-time live search filter, and catalog leaderboard with **1-click CSV export**.
+  4. **Customer Intelligence & VIPs**: Repeat purchase loyalty tier distribution, guest checkout revenue split, and top 10 VIP customer rankings with **1-click CSV export**.
+  5. **Geographic Markets**: Regional Average Order Value (AOV) comparison, international return friction ranking, and country-level league table with **1-click CSV export**.
+  6. **Interactive SQL Studio & Star Schema Architecture**: Live query runner allowing recruiters to select any of the 15 analytical SQL queries, inspect technical concepts, copy formatted SQL code, preview live query outputs, export results to CSV, and view the interactive 3NF dimensional Star Schema data model.
+- **Embedded Lightweight Payload**: Powered by `web/dashboard_data.json` (89 KB), ensuring sub-second load times with zero external database dependencies.
 
 ### Dashboard Visual Previews
 
-![RetailPulse Executive Overview Dashboard](reports/figures/dashboard_overview.png)
-*Figure 1: Executive Overview tab showing high-level commercial KPIs, monthly revenue growth trajectory, and market channel breakdown.*
+| Executive Overview & What-If Simulator | Interactive SQL Studio & Architecture |
+|:---:|:---:|
+| ![RetailPulse What-If Strategy Simulator](reports/figures/dashboard_whatif_simulator.png) | ![RetailPulse Interactive SQL Studio](reports/figures/dashboard_sql_studio.png) |
+| *Figure 1: Executive Overview with interactive What-If scenario forecasting.* | *Figure 2: Interactive SQL Studio showing Query 05 CTEs and live result preview.* |
 
-![RetailPulse Customer Intelligence Dashboard](reports/figures/dashboard_customers.png)
-*Figure 2: Customer Intelligence tab showcasing repeat purchase loyalty tiers, guest checkout impact, and top 10 VIP customer rankings.*
+| Customer Intelligence & Loyalty Tiers | Historical Monthly Trends & Seasonality |
+|:---:|:---:|
+| ![RetailPulse Customer Intelligence](reports/figures/dashboard_customers.png) | ![RetailPulse Executive Overview](reports/figures/dashboard_overview.png) |
+| *Figure 3: Customer intelligence & Pareto VIP ranking.* | *Figure 4: 13-Month seasonal trading revenue curve.* |
 
 ### 9.2 Power BI Desktop Blueprint & DAX Specification (4 Pages)
 Full visual blueprints, layout specifications, and production-tested DAX measures are documented in [`powerbi/dashboard_design.md`](powerbi/dashboard_design.md) and [`powerbi/dax_measures.md`](powerbi/dax_measures.md) 
