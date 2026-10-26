@@ -15,6 +15,7 @@ PROCESSED_DIR = BASE_DIR / "data" / "processed"
 SQL_DIR = BASE_DIR / "sql"
 DB_PATH = PROCESSED_DIR / "retailpulse.db"
 QUERIES_PATH = SQL_DIR / "analysis_queries.sql"
+SCHEMA_PATH = SQL_DIR / "schema.sql"
 
 
 @pytest.fixture(scope="session")
@@ -149,3 +150,50 @@ def test_all_15_queries_execute(db_connection):
             assert len(rows) > 0, f"Query {q_num} ('{q_title}') returned 0 rows."
         except Exception as e:
             pytest.fail(f"Query {q_num} ('{q_title}') failed with error: {e}")
+
+
+def test_database_not_null_constraints(db_connection):
+    """Verify NOT NULL constraints are strictly enforced on dimension tables."""
+    cursor = db_connection.cursor()
+    with pytest.raises(sqlite3.IntegrityError):
+        cursor.execute("INSERT INTO dim_geography (country_key, country, market_region) VALUES (9999, NULL, 'Test')")
+
+
+def test_database_unique_constraints(db_connection):
+    """Verify UNIQUE constraint on dim_geography country prevents duplicate country names."""
+    cursor = db_connection.cursor()
+    existing_country = cursor.execute("SELECT country FROM dim_geography LIMIT 1").fetchone()[0]
+    with pytest.raises(sqlite3.IntegrityError):
+        cursor.execute("INSERT INTO dim_geography (country_key, country, market_region) VALUES (9999, ?, 'Test')", (existing_country,))
+
+
+def test_foreign_key_constraint_enforcement():
+    """Verify SQLite enforces foreign key constraints when enabled."""
+    conn = sqlite3.connect(":memory:")
+    conn.execute("PRAGMA foreign_keys = ON;")
+    with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
+        conn.executescript(f.read())
+    cursor = conn.cursor()
+    with pytest.raises(sqlite3.IntegrityError):
+        cursor.execute("""
+            INSERT INTO fact_sales (invoice_no, invoice_date, date_key, customer_id, stock_code, country_key, quantity, unit_price, line_total, is_return, transaction_type)
+            VALUES ('TEST_ORPHAN', '2011-01-01 12:00:00', 20110101, -99999, '85123A', 1, 1, 10.0, 10.0, 0, 'Sale')
+        """)
+    conn.close()
+
+
+def test_query_result_reproducibility(db_connection):
+    """Verify repeated execution of analytical queries yields identical deterministic results."""
+    cursor = db_connection.cursor()
+    q = """
+    SELECT 
+        ROUND(SUM(CASE WHEN is_return = 0 THEN line_total ELSE 0 END), 2) AS gross,
+        ROUND(SUM(CASE WHEN is_return = 1 THEN line_total ELSE 0 END), 2) AS returns,
+        ROUND(SUM(line_total), 2) AS net
+    FROM fact_sales;
+    """
+    res1 = cursor.execute(q).fetchone()
+    res2 = cursor.execute(q).fetchone()
+    assert res1 == res2, "Repeated execution of financial query produced non-deterministic results."
+    assert res1 == (10642110.8, -893979.73, 9748131.07)
+

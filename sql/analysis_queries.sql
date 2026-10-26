@@ -95,7 +95,8 @@ WITH ProductSales AS (
         p.stock_code,
         p.description,
         ROUND(SUM(f.line_total), 2) AS product_net_revenue,
-        SUM(f.quantity) AS units_sold
+        SUM(f.quantity) AS units_sold,
+        COUNT(DISTINCT f.invoice_no) AS order_appearances
     FROM fact_sales f
     INNER JOIN dim_product p ON f.stock_code = p.stock_code
     GROUP BY p.stock_code, p.description
@@ -104,6 +105,7 @@ SELECT
     stock_code,
     description,
     units_sold,
+    order_appearances,
     product_net_revenue,
     ROUND(product_net_revenue * 100.0 / (SELECT SUM(line_total) FROM fact_sales), 2) AS pct_of_total_revenue
 FROM ProductSales

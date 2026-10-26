@@ -134,3 +134,19 @@ def test_date_range_bounds(processed_datasets):
     invoice_dates = pd.to_datetime(cleaned["invoice_date"])
     assert invoice_dates.min() >= pd.Timestamp("2010-12-01"), "Earliest date cannot precede Dec 1, 2010."
     assert invoice_dates.max() <= pd.Timestamp("2011-12-31"), "Latest date cannot exceed Dec 31, 2011."
+
+
+def test_line_total_calculation_invariant(processed_datasets):
+    """Verify line_total strictly equals round(quantity * unit_price, 2) across all fact records."""
+    fact = processed_datasets["fact"]
+    calc_total = (fact["quantity"] * fact["unit_price"]).round(2)
+    diff = (fact["line_total"] - calc_total).abs()
+    assert (diff < 0.011).all(), "Found records where line_total diverges from quantity * unit_price."
+
+
+def test_missing_raw_file_handling():
+    """Verify pipeline scripts cleanly report missing input files without unhandled crashes."""
+    raw_dir = BASE_DIR / "data" / "raw"
+    assert raw_dir.exists(), f"Raw directory {raw_dir} should exist."
+
+

@@ -274,6 +274,7 @@
       "stock_code": "DOT",
       "description": "DOTCOM POSTAGE",
       "units_sold": 705,
+      "order_appearances": 707,
       "product_net_revenue": 206245.48,
       "pct_of_total_revenue": 2.12
     },
@@ -281,6 +282,7 @@
       "stock_code": "22423",
       "description": "REGENCY CAKESTAND 3 TIER",
       "units_sold": 12996,
+      "order_appearances": 2168,
       "product_net_revenue": 164459.49,
       "pct_of_total_revenue": 1.69
     },
@@ -288,6 +290,7 @@
       "stock_code": "85123A",
       "description": "WHITE HANGING HEART T-LIGHT HOLDER",
       "units_sold": 35355,
+      "order_appearances": 2307,
       "product_net_revenue": 99790.93,
       "pct_of_total_revenue": 1.02
     },
@@ -295,6 +298,7 @@
       "stock_code": "47566",
       "description": "PARTY BUNTING",
       "units_sold": 18006,
+      "order_appearances": 1705,
       "product_net_revenue": 98243.88,
       "pct_of_total_revenue": 1.01
     },
@@ -302,6 +306,7 @@
       "stock_code": "85099B",
       "description": "JUMBO BAG RED RETROSPOT",
       "units_sold": 47256,
+      "order_appearances": 2132,
       "product_net_revenue": 92175.79,
       "pct_of_total_revenue": 0.95
     },
@@ -309,6 +314,7 @@
       "stock_code": "23084",
       "description": "RABBIT NIGHT LIGHT",
       "units_sold": 30631,
+      "order_appearances": 1009,
       "product_net_revenue": 66661.63,
       "pct_of_total_revenue": 0.68
     },
@@ -316,6 +322,7 @@
       "stock_code": "POST",
       "description": "POSTAGE",
       "units_sold": 3003,
+      "order_appearances": 1250,
       "product_net_revenue": 66230.64,
       "pct_of_total_revenue": 0.68
     },
@@ -323,6 +330,7 @@
       "stock_code": "22086",
       "description": "PAPER CHAIN KIT 50'S CHRISTMAS",
       "units_sold": 18876,
+      "order_appearances": 1170,
       "product_net_revenue": 63715.24,
       "pct_of_total_revenue": 0.65
     },
@@ -330,6 +338,7 @@
       "stock_code": "84879",
       "description": "ASSORTED COLOUR BIRD ORNAMENT",
       "units_sold": 36282,
+      "order_appearances": 1467,
       "product_net_revenue": 58792.42,
       "pct_of_total_revenue": 0.6
     },
@@ -337,6 +346,7 @@
       "stock_code": "79321",
       "description": "CHILLI LIGHTS",
       "units_sold": 10222,
+      "order_appearances": 667,
       "product_net_revenue": 53746.66,
       "pct_of_total_revenue": 0.55
     }

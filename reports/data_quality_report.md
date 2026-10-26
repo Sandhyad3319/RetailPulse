@@ -63,8 +63,8 @@ To avoid losing £1.4+ million in guest checkout revenue while strictly maintain
   - `customer_id`: `-1`
   - `customer_type`: `Guest Checkout`
   - `country`: `Multiple`
-  - `total_orders`: `1,624` distinct guest invoices
-  - `total_spend`: `£1,446,552.12`
+  - `total_orders`: `1,610` distinct guest invoices
+  - `total_spend`: `£1,469,611.65` (15.08% of total commercial revenue)
 
 ---
 

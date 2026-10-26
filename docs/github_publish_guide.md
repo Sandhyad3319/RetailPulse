@@ -8,8 +8,8 @@ This guide walks you through publishing **RetailPulse** to GitHub as a portfolio
 
 Before making any commit, verify these safety rules:
 - [x] **No Private Passwords or API Keys**: The project uses local SQLite and public datasets; zero private credentials exist.
-- [x] **Exclude Oversized Raw Files**: GitHub blocks files over 100 MB and warns on files over 50 MB. Our `.gitignore` automatically excludes `data/raw/*.xlsx` and `data/raw/*.zip` because users can download the raw data on demand with `python python/download_data.py`.
-- [x] **Include Processed CSVs & Database**: The processed CSV files and SQLite database (`data/processed/retailpulse.db` at 83.6 MB) can be included so reviewers and recruiters can immediately evaluate your queries without needing to run the ingestion pipeline.
+- [x] **Exclude Oversized Raw & Generated Files**: GitHub blocks files over 100 MB and warns on files over 50 MB. Our `.gitignore` excludes `data/raw/*`, `data/processed/*.db` (83.6 MB), and large flat files (`cleaned_transactions.csv`, `sales_transactions.csv`, `fact_sales.csv`). These are generated deterministically in seconds via `python python/clean_data.py` and `python python/load_sqlite.py`.
+- [x] **Track Lightweight Dimensions & Reports**: The dimension CSVs (`dim_customer.csv`, `dim_product.csv`, `dim_date.csv`, `dim_geography.csv`), `returns_cancellations.csv`, and all 15 SQL query outputs in `reports/sql/` are tracked so reviewers and recruiters can immediately inspect clean datasets and query findings.
 
 ---
 

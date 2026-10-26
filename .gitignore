@@ -41,11 +41,17 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
-# Temporary logs
+# Temporary logs & local runner wrappers
 *.log
 *.tmp
+powershell.cmd
 
-# Sensitive credentials (safety rule)
+# Sensitive credentials & tokens (safety rule)
 .env
+.env.*
 *.key
 *.pem
+*.pfx
+secrets.json
+credentials.json
+token.json

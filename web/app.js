@@ -21,12 +21,18 @@ let charts = {};
 
 // Helper: Format Currency GBP
 function formatGBP(val) {
-  return '£' + Number(val).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (val === null || val === undefined) return '£0.00';
+  const num = Number(val);
+  if (isNaN(num)) return '£0.00';
+  return '£' + num.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 // Helper: Format Numbers with commas
 function formatNumber(val) {
-  return Number(val).toLocaleString('en-GB');
+  if (val === null || val === undefined) return '0';
+  const num = Number(val);
+  if (isNaN(num)) return String(val);
+  return num.toLocaleString('en-GB');
 }
 
 // Tab Switching Logic
@@ -57,6 +63,30 @@ function initTabs() {
   });
 }
 
+// Bind Top KPI Cards dynamically from loaded JSON
+function renderKPIs() {
+  if (!appData || !appData.kpis) return;
+  const kpis = appData.kpis;
+
+  const elNetRev = document.getElementById('kpi-net-revenue');
+  if (elNetRev) elNetRev.textContent = formatGBP(kpis.net_revenue_gbp);
+
+  const elOrders = document.getElementById('kpi-total-orders');
+  if (elOrders) elOrders.textContent = formatNumber(kpis.total_orders);
+
+  const elAOV = document.getElementById('kpi-aov');
+  if (elAOV) {
+    const aov = kpis.total_orders > 0 ? (kpis.net_revenue_gbp / kpis.total_orders) : 0;
+    elAOV.textContent = formatGBP(aov);
+  }
+
+  const elUnits = document.getElementById('kpi-units-sold');
+  if (elUnits) elUnits.textContent = formatNumber(kpis.net_units_sold);
+
+  const elReturnRate = document.getElementById('kpi-return-rate');
+  if (elReturnRate) elReturnRate.textContent = kpis.refund_rate_pct.toFixed(2) + '%';
+}
+
 // Initialize and render all Dashboard charts
 async function initDashboard() {
   initTabs();
@@ -69,6 +99,7 @@ async function initDashboard() {
     return;
   }
 
+  renderKPIs();
   renderOverviewCharts();
   renderTrendsCharts();
   renderProductCharts();
@@ -82,7 +113,7 @@ async function initDashboard() {
 function renderOverviewCharts() {
   const trends = appData.monthly_trends;
   const labels = trends.map(t => t.year_month);
-  const revenues = trends.map(t => t.net_monthly_revenue_gbp);
+  const revenues = trends.map(t => t.net_revenue_gbp ?? t.net_monthly_revenue_gbp);
 
   // 1. Monthly Overview Line & Bar Chart
   const ctxOverview = document.getElementById('chart-overview-monthly').getContext('2d');
@@ -108,7 +139,7 @@ function renderOverviewCharts() {
         {
           type: 'bar',
           label: 'Monthly Orders',
-          data: trends.map(t => t.order_count),
+          data: trends.map(t => t.monthly_orders ?? t.order_count),
           backgroundColor: 'rgba(59, 130, 246, 0.35)',
           borderRadius: 6,
           yAxisID: 'y1'
@@ -189,13 +220,13 @@ function renderTrendsCharts() {
       datasets: [
         {
           label: 'Gross Sales (£)',
-          data: trends.map(t => t.gross_sales_gbp),
+          data: trends.map(t => t.gross_revenue_gbp ?? t.gross_sales_gbp),
           backgroundColor: '#3b82f6',
           borderRadius: 6
         },
         {
           label: 'Returns Deducted (£)',
-          data: trends.map(t => Math.abs(t.return_refunds_gbp)),
+          data: trends.map(t => Math.abs(t.refund_value_gbp ?? t.return_refunds_gbp ?? 0)),
           backgroundColor: '#f43f5e',
           borderRadius: 6
         }
@@ -249,16 +280,24 @@ function renderTrendsCharts() {
   const tbody = document.querySelector('#table-monthly-trends tbody');
   tbody.innerHTML = '';
   trends.forEach(t => {
+    const gross = t.gross_revenue_gbp ?? t.gross_sales_gbp ?? 0;
+    const refund = t.refund_value_gbp ?? t.return_refunds_gbp ?? 0;
+    const net = t.net_revenue_gbp ?? t.net_monthly_revenue_gbp ?? (gross + refund);
+    const orders = t.monthly_orders ?? t.order_count ?? 0;
+    const units = t.net_units_sold ?? t.units_sold ?? 0;
+    const refundRate = t.refund_rate_pct !== undefined ? t.refund_rate_pct : (gross > 0 ? (Math.abs(refund) * 100 / gross) : 0);
+    const aov = t.average_order_value_gbp !== undefined ? t.average_order_value_gbp : (orders > 0 ? (net / orders) : 0);
+
     const row = document.createElement('tr');
     row.innerHTML = `
       <td class="mono"><strong>${t.year_month}</strong></td>
-      <td>${formatNumber(t.order_count)}</td>
-      <td class="mono positive">${formatGBP(t.gross_sales_gbp)}</td>
-      <td class="mono negative">-${formatGBP(Math.abs(t.return_refunds_gbp))}</td>
-      <td class="mono"><strong>${formatGBP(t.net_monthly_revenue_gbp)}</strong></td>
-      <td>${t.refund_rate_pct.toFixed(2)}%</td>
-      <td>${formatNumber(t.units_sold)}</td>
-      <td class="mono">${formatGBP(t.average_order_value_gbp)}</td>
+      <td>${formatNumber(orders)}</td>
+      <td class="mono positive">${formatGBP(gross)}</td>
+      <td class="mono negative">-${formatGBP(Math.abs(refund))}</td>
+      <td class="mono"><strong>${formatGBP(net)}</strong></td>
+      <td>${refundRate.toFixed(2)}%</td>
+      <td>${formatNumber(units)}</td>
+      <td class="mono">${formatGBP(aov)}</td>
     `;
     tbody.appendChild(row);
   });
@@ -335,10 +374,10 @@ function renderProductCharts() {
         <td><span class="tag-pill cyan">#${idx + 1}</span></td>
         <td class="mono">${p.stock_code}</td>
         <td><strong>${p.description}</strong></td>
-        <td>${formatNumber(p.units_sold)}</td>
-        <td>${formatNumber(p.order_appearances || 'N/A')}</td>
-        <td class="mono positive">${formatGBP(p.product_net_revenue)}</td>
-        <td><strong>${p.pct_of_total_revenue.toFixed(2)}%</strong></td>
+        <td>${formatNumber(p.units_sold ?? p.total_units_sold ?? 0)}</td>
+        <td>${p.order_appearances !== undefined ? formatNumber(p.order_appearances) : 'N/A'}</td>
+        <td class="mono positive">${formatGBP(p.product_net_revenue ?? p.net_product_revenue_gbp)}</td>
+        <td><strong>${Number(p.pct_of_total_revenue || 0).toFixed(2)}%</strong></td>
       `;
       tbody.appendChild(row);
     });
